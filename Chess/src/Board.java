@@ -1,8 +1,16 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
+
+import javax.swing.border.EmptyBorder;
 
 public class Board {
     private final int HEIGTH = 8;
     private final int WIDTH = 8;
+
+    private final int WHITE = 1;
+    private final int BLACK = -1;
 
     /*
     * -ve for black, +ve for white
@@ -209,17 +217,143 @@ public class Board {
             }
             generatedFEN+= "/";
         }
-        FEN = generatedFEN;
+        FEN = generatedFEN.substring(0, generatedFEN.length()-1);
     }
 
     public String getFEN(){
         return FEN;
     }
 
+    private int[] findPiece(int piece) {
+        
+        int[] location = new int[64];
+        int counter = 0;
+
+        for(int i=0; i<HEIGTH*WIDTH; i++){
+            if(board[i] == piece) {
+                location[counter] = i;
+                counter +=1;
+            }
+        }
+
+        return Arrays.copyOf(location,counter);
+    }
+
     /*
-     * inputs int[2]: [start square, destination square]
-     * outputs int[4]: [start square, desitination square, piece moved, piece at destination square]
+     * inputs: [player(white = 1, black = -1)]
+     * outputs: [[start square, destination square]]
      */
+    public int[][] generatePawnMoves(int input) {
+        //want to find all of the pawns for the correct colour
+        int dSquare;
+        ArrayList<int[]> moves = new ArrayList<int[]>();
+        int[] move = new int[2];
+
+        int[] positions = findPiece(input*PAWN);
+        for(int i: positions){
+            //check if 1 in front is possible, if this then check if two infront is possible
+
+            move[0] = i;
+
+            //forward moves
+            dSquare = i-(input*WIDTH);
+            if(board[dSquare] == EMPTY){
+                //able to make to make a move infront
+                move[1] = dSquare;
+                moves.add(move.clone());
+
+
+
+                //is it withing the respective starting squares
+                if ( i < (36 + (input * 20))) {
+                    if (i >= (28 + (input * 20))) {
+                        dSquare = i-(input*WIDTH*2);
+                        if(board[dSquare] == EMPTY) {
+                            //able to make a double move
+                            move[1] = dSquare;
+                            moves.add(move.clone());
+                        }
+                    }
+                }
+            }
+
+            //taking
+            if(i%8 == 0) {
+                if (input == WHITE) {
+                    //check to the right
+                    dSquare = i - (input*7);
+                    if(input*board[dSquare] < 0) {
+                        // we can take in this direction
+                        move[1] = dSquare;
+                        moves.add(move.clone());
+                    }
+                } else {
+                    //check to the left
+                    dSquare = i - (input*9);
+                    if(input*board[dSquare] < 0) {
+                        // we can take on this square
+                        move[1] = dSquare;
+                        moves.add(move.clone());
+                    }
+                }
+            } else if(i%8 == 7) {
+                if (input == BLACK) {
+                    //check to the right
+                    dSquare = i - (input*7);
+                    if(input*board[dSquare] < 0) {
+                        // we can take in this direction
+                        move[1] = dSquare;
+                        moves.add(move.clone());
+                    }
+                } else {
+                    //check to the left
+                    dSquare = i - (input*9);
+                    if(input*board[dSquare] < 0) {
+                        // we can take on this square
+                        move[1] = dSquare;
+                        moves.add(move.clone());
+                    }
+                }
+            } else {
+                //check to the right
+                dSquare = i - (input*7);
+                if(input*board[dSquare] < 0) {
+                    // we can take in this direction
+                    move[1] = dSquare;
+                    moves.add(move.clone());
+                }
+
+                //check to the left
+                dSquare = i - (input*9);
+                if(input*board[dSquare] < 0) {
+                    // we can take on this square
+                    move[1] = dSquare;
+                    moves.add(move.clone());
+                }
+            }
+        }
+
+        int size = moves.size();
+        System.out.println("\n" + input);
+
+        for(int i = 0; i< size; i++){
+            System.out.print(Arrays.toString(moves.get(i)));
+        }
+
+        int[][] output = new int[size][2];
+        for(int i= 0; i<size; i++) {
+            output[i] = moves.get(i);
+        }
+        
+        return output;
+    }
+
+
+    ///*
+    // * inputs int[2]: [start square, destination square]
+    // * outputs int[4]: [start square, desitination square, piece moved, piece at destination square]
+    //*/
+
     public int[] makeMove(int[] inputs) {
         int start = inputs[0];
         int destination = inputs[1];
