@@ -1,10 +1,7 @@
-import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.border.EmptyBorder;
 
 public class Board {
     private final int HEIGTH = 8;
@@ -46,6 +43,14 @@ public class Board {
     private final int NOENPASSANT = -1;
 
     private int[] board = new int[HEIGTH*WIDTH];
+
+    private final int ENPASSANTMOVE = 64;
+    private final int WHITEQUEENSIDECASTLE = 65;
+    private final int WHITEKINGSIDECASTLE = 66;
+    private final int BLACKQUEENSIDECASTLE = 67;
+    private final int BLACKINGSIDECASTLE = 68;
+    
+    
 
     public Board(){
         for(int i =0; i<64; i++) {
@@ -193,12 +198,12 @@ public class Board {
         }
 
         // pawn move
-        String pawnMove = scannerFEN.next();
+        String pawnMove = scannerFEN.next().strip();
 
         
-        char c = Character.toLowerCase(castlingString.charAt(0));
+        char c = Character.toLowerCase(pawnMove.charAt(0));        
 
-        if( c != '-' && pawnMove.length()>2){
+        if( c != '-' && pawnMove.length()>=2){
 
             int row = pawnMove.charAt(1) - '0';
             int column = 0;
@@ -233,7 +238,7 @@ public class Board {
                     break;
             }
 
-            enPassant = row*WIDTH + column;
+            enPassant = row*WIDTH + column - 8;
         } else {
             enPassant = NOENPASSANT;
         }
@@ -364,39 +369,55 @@ public class Board {
 
             switch (column) {
                 case 0:
-                    generatedFEN += "a";
+                    generatedFEN += " a";
+                    break;
                 case 1:
-                    generatedFEN += "b";
+                    generatedFEN += " b";
+                    break;
                 case 2:
-                    generatedFEN += "c";
+                    generatedFEN += " c";
+                    break;
                 case 3:
-                    generatedFEN += "d";
+                    generatedFEN += " d";
+                    break;
                 case 4:
-                    generatedFEN += "e";
+                    generatedFEN += " e";
+                    break;
                 case 5:
-                    generatedFEN += "f";
+                    generatedFEN += " f";
+                    break;
                 case 6:
-                    generatedFEN += "g";
+                    generatedFEN += " g";
+                    break;
                 case 7:
-                    generatedFEN += "h";
+                    generatedFEN += " h";
+                    break;
             }
             switch (row) {
                 case 0:
                     generatedFEN += "8";
+                    break;
                 case 1:
                     generatedFEN += "7";
+                    break;
                 case 2:
                     generatedFEN += "6";
+                    break;
                 case 3:
                     generatedFEN += "5";
+                    break;
                 case 4:
                     generatedFEN += "4";
+                    break;
                 case 5:
                     generatedFEN += "3";
+                    break;
                 case 6:
                     generatedFEN += "2";
+                    break;
                 case 7:
                     generatedFEN += "1";
+                    break;
             }
         } else {
             generatedFEN += " -";
@@ -1175,26 +1196,43 @@ public class Board {
 
     public int[][] generateEnPassant(int input) {
 
-        //want to find all of the rooks for the correct colour
-        int dSquare;
-        //ArrayList<int[]> moves = new ArrayList<int[]>();
+        ArrayList<int[]> moves = new ArrayList<int[]>();
         int[] move = new int[2];
-
-        int[] positions = findPiece(input*PAWN);
-        int [][] moves = {{}};
 
         //check if we have a en passant move available
         if(enPassant == NOENPASSANT) {
-            moves = null;
-            return moves;
+            int[][] output = {{}};
+            return output;
+        } else {
+            move[1] = ENPASSANTMOVE;
+            //check to see if their is a pawn in the position
+            int sSquare = enPassant + input*9;
+            int row = (sSquare - sSquare%WIDTH)/WIDTH;
+            if( row == ((enPassant - enPassant%WIDTH)/WIDTH+input*1)) {
+                if (board[sSquare] == input*PAWN) {
+                    move[0] = sSquare;
+                    moves.add(move.clone());
+                }
+            }
+
+            sSquare = enPassant+ input*7;
+            row = (sSquare - sSquare%WIDTH)/WIDTH;
+            if( row == ((enPassant - enPassant%WIDTH)/WIDTH+input*1)) {
+                if (board[sSquare] == input*PAWN) {
+                    move[0] = sSquare;
+                    moves.add(move.clone());
+                }
+            }
         }
 
+        int size = moves.size();
 
-        //en passant os
+        int[][] output = new int[size][2];
+        for(int i= 0; i<size; i++) {
+            output[i] = moves.get(i);
+        }
 
-        
-
-        return moves;
+        return output;
     }
 
     public void generateMoves(int input) {
@@ -1206,11 +1244,9 @@ public class Board {
         int[][] bMoves = this.generateBishopMoves(input);
         int[][] qMoves = this.generateQueenMoves(input);
         int[][] kMoves = this.generateKingMoves(input);
-        int[][] enPassantMoves = {};
+        int[][] ePMoves = this.generateEnPassant(input);
 
-        if( enPassant != NOENPASSANT) {
-            
-        }
+        
     }
 
 
