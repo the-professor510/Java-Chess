@@ -36,6 +36,15 @@ public class Board {
     private String FEN;
     private final String STARTINGFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
+    private int[] lastMove; //[start sqaure, destination square, piece moved, last piece moved]
+    private boolean whitesTurn; // true, white 
+    private boolean[] castling = new boolean[4]; //[W Queenside, W Kingside, B Queenside, B Kingside]
+    private int enPassant; // square that a pawn may do en Passant on, -1 if no piece can move their
+    private int halfmove; // last move since pawn advance or piece capture
+    private int fullmove; // increases everytime black plays a move
+
+    private final int NOENPASSANT = -1;
+
     private int[] board = new int[HEIGTH*WIDTH];
 
     public Board(){
@@ -151,6 +160,103 @@ public class Board {
         
             counter +=1;
         }
+
+        //read in the rest of the fen
+        
+        // whose move
+        String turn = scannerFEN.next();
+        if(turn.toLowerCase().equals("w")) {
+            whitesTurn = true;
+        } else {
+            whitesTurn = false;
+        }
+
+        // castling availability
+        String castlingString = scannerFEN.next();
+        for(int i=0; i< castlingString.length(); i++){
+            char c = castlingString.charAt(i);
+
+            //[W Queenside, W Kingside, B Queenside, B Kingside]
+            if( c == 'Q') {
+                castling[0] = true;
+            } else if (c == 'K') {
+                castling[1] = true;
+            } else if (c == 'q') {
+                castling[2] = true;
+            } else if (c == 'k') {
+                castling[3] = true;
+            } else {
+                for( int j = 0; j<castling.length; j++) {
+                    castling[i] = false;
+                }                
+            }
+        }
+
+        // pawn move
+        String pawnMove = scannerFEN.next();
+
+        
+        char c = Character.toLowerCase(castlingString.charAt(0));
+
+        if( c != '-' && pawnMove.length()>2){
+
+            int row = pawnMove.charAt(1) - '0';
+            int column = 0;
+            switch (c) {
+                case 'a':
+                    column = 0;
+                    break;
+                case 'b':
+                    column = 1;
+                    break;
+                case 'c':
+                    column = 2;
+                    break;
+                case 'd':
+                    column = 3;
+                    break;
+                case 'e':
+                    column = 4;
+                    break;
+                case 'f':
+                    column = 5;
+                    break;
+                case 'g':
+                    column = 6;
+                    break;
+                case 'h':
+                    column = 7;
+                    break;
+                default:
+                    enPassant = NOENPASSANT;
+                    System.out.println(pawnMove);
+                    break;
+            }
+
+            enPassant = row*WIDTH + column;
+        } else {
+            enPassant = NOENPASSANT;
+        }
+        
+
+
+
+        // full and half moves
+        String halfMoveString = scannerFEN.next();
+        String fullMoveString = scannerFEN.next();
+
+        try{
+            halfmove = Integer.parseInt(halfMoveString);
+            fullmove = Integer.parseInt(fullMoveString);
+        }
+        catch (NumberFormatException ex){
+            ex.printStackTrace();
+            halfmove = 0;
+            fullmove = 0;
+        }
+
+        scannerFEN.close();
+
     }
 
     public void updateFEN(){
@@ -219,7 +325,91 @@ public class Board {
             }
             generatedFEN+= "/";
         }
-        FEN = generatedFEN.substring(0, generatedFEN.length()-1);
+        generatedFEN = generatedFEN.substring(0, generatedFEN.length()-1);
+
+        // generate if it is whites turn
+        if (whitesTurn) {
+            generatedFEN += " w";
+        } else {
+            generatedFEN += " b";
+        }
+
+
+        //castling
+        generatedFEN += " ";
+        String castlingString = "";
+        if(castling[0] == false && castling[1] == false && castling[2] == false && castling[3] == false) {
+            castlingString = "-";
+        } else {
+            if (castling[1]) {
+                castlingString += "K";
+            }
+            if (castling[0]) {
+                castlingString += "Q";
+            }
+            if (castling[3]) {
+                castlingString += "k";
+            }
+            if (castling[2]) {
+                castlingString += "q";
+            }
+        } 
+        generatedFEN += castlingString;
+
+        //enPassant
+        if (enPassant != NOENPASSANT) {
+            //convert the integer into chess notation
+            int column = enPassant%WIDTH;
+            int row = (enPassant - column)/HEIGTH;
+
+            switch (column) {
+                case 0:
+                    generatedFEN += "a";
+                case 1:
+                    generatedFEN += "b";
+                case 2:
+                    generatedFEN += "c";
+                case 3:
+                    generatedFEN += "d";
+                case 4:
+                    generatedFEN += "e";
+                case 5:
+                    generatedFEN += "f";
+                case 6:
+                    generatedFEN += "g";
+                case 7:
+                    generatedFEN += "h";
+            }
+            switch (row) {
+                case 0:
+                    generatedFEN += "8";
+                case 1:
+                    generatedFEN += "7";
+                case 2:
+                    generatedFEN += "6";
+                case 3:
+                    generatedFEN += "5";
+                case 4:
+                    generatedFEN += "4";
+                case 5:
+                    generatedFEN += "3";
+                case 6:
+                    generatedFEN += "2";
+                case 7:
+                    generatedFEN += "1";
+            }
+        } else {
+            generatedFEN += " -";
+        }
+
+        //half move
+        generatedFEN += (" " + halfmove);
+
+        //full move
+        generatedFEN += (" " + fullmove);
+
+        FEN = generatedFEN;
+
     }
 
     public String getFEN(){
@@ -336,11 +526,6 @@ public class Board {
         }
 
         int size = moves.size();
-        System.out.println("\n" + input);
-
-        for(int i = 0; i< size; i++){
-            System.out.print(Arrays.toString(moves.get(i)));
-        }
 
         int[][] output = new int[size][2];
         for(int i= 0; i<size; i++) {
@@ -507,11 +692,6 @@ public class Board {
         }
 
         int size = moves.size();
-        System.out.println("\n" + input);
-
-        for(int i = 0; i< size; i++){
-            System.out.print(Arrays.toString(moves.get(i)));
-        }
 
         int[][] output = new int[size][2];
         for(int i= 0; i<size; i++) {
@@ -610,12 +790,7 @@ public class Board {
         }
 
         int size = moves.size();
-        System.out.println("\n" + input);
-
-        for(int i = 0; i< size; i++){
-            System.out.print(Arrays.toString(moves.get(i)));
-        }
-
+        
         int[][] output = new int[size][2];
         for(int i= 0; i<size; i++) {
             output[i] = moves.get(i);
@@ -711,11 +886,6 @@ public class Board {
         }
 
         int size = moves.size();
-        System.out.println("\n" + input);
-
-        for(int i = 0; i< size; i++){
-            System.out.print(Arrays.toString(moves.get(i)));
-        }
 
         int[][] output = new int[size][2];
         for(int i= 0; i<size; i++) {
@@ -881,11 +1051,6 @@ public class Board {
         }
 
         int size = moves.size();
-        System.out.println("\n" + input);
-
-        for(int i = 0; i< size; i++){
-            System.out.print(Arrays.toString(moves.get(i)));
-        }
 
         int[][] output = new int[size][2];
         for(int i= 0; i<size; i++) {
@@ -998,11 +1163,6 @@ public class Board {
         }
 
         int size = moves.size();
-        System.out.println("\n" + input);
-
-        for(int i = 0; i< size; i++){
-            System.out.print(Arrays.toString(moves.get(i)));
-        }
 
         int[][] output = new int[size][2];
         for(int i= 0; i<size; i++) {
@@ -1012,6 +1172,63 @@ public class Board {
         return output;
     }
 
+
+    public int[][] generateEnPassant(int input) {
+
+        //want to find all of the rooks for the correct colour
+        int dSquare;
+        //ArrayList<int[]> moves = new ArrayList<int[]>();
+        int[] move = new int[2];
+
+        int[] positions = findPiece(input*PAWN);
+        int [][] moves = {{}};
+
+        //check if we have a en passant move available
+        if(enPassant == NOENPASSANT) {
+            moves = null;
+            return moves;
+        }
+
+
+        //en passant os
+
+        
+
+        return moves;
+    }
+
+    public void generateMoves(int input) {
+        int[][] allMoves;
+
+        int[][] pMoves = this.generatePawnMoves(input);
+        int[][] rMoves = this.generateRookMoves(input);
+        int[][] nMoves = this.generateKnightMoves(input);
+        int[][] bMoves = this.generateBishopMoves(input);
+        int[][] qMoves = this.generateQueenMoves(input);
+        int[][] kMoves = this.generateKingMoves(input);
+        int[][] enPassantMoves = {};
+
+        if( enPassant != NOENPASSANT) {
+            
+        }
+    }
+
+
+    public void updateLastMove(int[] move) {
+        lastMove = move;
+    }
+
+    public int[] getLastMove() {
+        return lastMove;
+    }
+
+    public void updateEnPassant(int square) {
+        enPassant = square;
+    }
+
+    public int getEnPassant() {
+        return enPassant;
+    }
 
     ///*
     // * inputs int[2]: [start square, destination square]

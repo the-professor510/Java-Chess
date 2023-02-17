@@ -29,27 +29,30 @@ public class App {
         board.printBoard();
         board.updateFEN();
         System.out.println(board.getFEN()); */
+        
+        long epoch = System.currentTimeMillis();
 
-        //board.generatePawnMoves(1);
-        //board.generatePawnMoves(-1);
+        board.generatePawnMoves(1);
+        board.generatePawnMoves(-1);
 
-        //board.generateKingMoves(1);
-        //board.generateKingMoves(-1);
+        board.generateKingMoves(1);
+        board.generateKingMoves(-1);
 
-        //board.generateRookMoves(1);
-        //board.generateRookMoves(-1);
+        board.generateRookMoves(1);
+        board.generateRookMoves(-1);
 
-        //board.generateBishopMoves(1);
-        //board.generateBishopMoves(-1);
+        board.generateBishopMoves(1);
+        board.generateBishopMoves(-1);
 
-        //board.generateQueenMoves(1);
-        //board.generateQueenMoves(-1);
+        board.generateQueenMoves(1);
+        board.generateQueenMoves(-1);
 
         board.generateKnightMoves(1);
 
 
+        long epoch2 = System.currentTimeMillis();
 
-
+        System.out.println("\nTime to run: " + (epoch2-epoch) + "ms");
 
         //board.startingPosition();
         //board.printBoard();
