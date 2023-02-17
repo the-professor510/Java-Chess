@@ -1,4 +1,4 @@
-import java.util.Arrays;
+//import java.util.Arrays;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -10,7 +10,7 @@ public class App {
         //board.startingPosition();
         //board.printBoard();
 
-        board.readInFEN("rnbqkbnr/pppppppp/2P5/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        board.readInFEN("rnbqkbnr/pppppppp/8/7N/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         board.printBoard();
         board.updateFEN();
         System.out.println(board.getFEN());
@@ -30,8 +30,22 @@ public class App {
         board.updateFEN();
         System.out.println(board.getFEN()); */
 
-        board.generatePawnMoves(1);
-        board.generatePawnMoves(-1);
+        //board.generatePawnMoves(1);
+        //board.generatePawnMoves(-1);
+
+        //board.generateKingMoves(1);
+        //board.generateKingMoves(-1);
+
+        //board.generateRookMoves(1);
+        //board.generateRookMoves(-1);
+
+        //board.generateBishopMoves(1);
+        //board.generateBishopMoves(-1);
+
+        //board.generateQueenMoves(1);
+        //board.generateQueenMoves(-1);
+
+        board.generateKnightMoves(1);
 
 
 
