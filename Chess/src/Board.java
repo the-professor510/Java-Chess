@@ -574,7 +574,6 @@ public class Board {
             move[0] = i;
 
             if(i%8 == 0) {
-                System.out.println("runs");
                 //on the left
                 if( i == 0 ){
                     //top left
@@ -620,7 +619,6 @@ public class Board {
                     }
                 }
             } else if (i%8 == 7) {
-                System.out.println("runs");
                 //on the right
                 if(i ==7) {
                     //top right
@@ -1180,7 +1178,6 @@ public class Board {
                     
                 }
             }
-
         }
 
         int size = moves.size();
@@ -1246,9 +1243,378 @@ public class Board {
         int[][] kMoves = this.generateKingMoves(input);
         int[][] ePMoves = this.generateEnPassant(input);
 
-        
     }
 
+    /*
+     * checks if this square would put the king in check, i.e. if this square is underattack from the other player
+     * inputs: int colour - the colour of the king which we want to check if it would be in check
+     *         int square - the square of the piece which we want to check if it would be in check
+     * outputs: boolen - if the king would be in check in this position
+     */
+    public boolean isAttacked (int colour, int square) {
+        //check around this square if it is attacked by any pieces
+
+        int dSquare = 0;
+        
+        //can we be taken by a knight
+        for (int x = -1; x<=1; x+=2){
+            for (int y = -2; y<=2; y+=4) {
+                dSquare = square + WIDTH*y + x;
+                //need to limit so that I only find if the dSquare is free when we haven't crossed over the board
+                if(dSquare%WIDTH > square%WIDTH ) {
+                    if ( square%WIDTH == 0 && dSquare%WIDTH == (WIDTH-1)) {
+                        continue;
+                    } else {
+                        if(dSquare>0 && dSquare<64) {
+                            if(board[dSquare] == -colour*KNIGHT) {
+                                // we can be taken in this direction
+                                return true;
+                            }
+                        }
+                    }
+                } else if (dSquare%WIDTH < square%WIDTH ) {
+                    if ( square%WIDTH == (WIDTH-1) && dSquare%WIDTH == 0) {
+                        continue;
+                    } else {
+                        if(dSquare>0 && dSquare<64) {
+                            if(board[dSquare] == -colour*KNIGHT) {
+                                // we can be taken in this direction
+                                return true;
+                            }
+                        }
+                    }
+                } else {
+                    if(dSquare>0 && dSquare<64) {
+                        if(board[dSquare] == -colour*KNIGHT) {
+                            // we can be taken in this direction
+                            return true;
+                        }
+                    }
+                }                    
+            }
+        }
+
+        for (int x = -2; x<=2; x+=4){
+            for (int y = -1; y<=1; y+=2) {
+                dSquare = square + WIDTH*y + x;
+
+                if(dSquare%WIDTH > square%WIDTH ) {
+                    if ( square%WIDTH == 0 && dSquare%WIDTH == (WIDTH-2)) {
+                        continue;
+                    } else if ( square%WIDTH == 1 && dSquare%WIDTH == (WIDTH-1)) {
+                        continue;
+                    } else {
+                        if(dSquare>0 && dSquare<64) {
+                            if(board[dSquare] == -colour*KNIGHT) {
+                                // we can be taken in this direction
+                                return true;
+                            }
+                        }
+                    }
+                } else if (dSquare%WIDTH < square%WIDTH ) {
+                    if ( square%WIDTH == (WIDTH-2) && dSquare%WIDTH == 0) {
+                        continue;
+                    } else if ( square%WIDTH == (WIDTH -1) && dSquare%WIDTH == 1) {
+                        continue;
+                    } else {
+                        if(dSquare>0 && dSquare<64) {
+                            if(board[dSquare] == -colour*KNIGHT) {
+                                // we can be taken in this direction
+                                return true;
+                            }
+                        }
+                    }
+                } else {
+                    if(dSquare>0 && dSquare<64) {
+                        if(board[dSquare] == -colour*KNIGHT) {
+                            // we can be taken in this direction
+                            return true;
+                        }
+                    }
+                }  
+                
+            }
+        }
+
+
+        //can we be taken on the diagonals and to the side
+        dSquare = square - WIDTH;
+        while (dSquare > 0) {
+            //check to see if the destination square is able to be moved to
+            if (board[dSquare] == -colour*ROOK || board[dSquare] == -colour*QUEEN) {
+                return true;
+            } else if(board[dSquare] != EMPTY){
+                break;
+            }
+            dSquare -= WIDTH;
+        }
+
+        // To the left
+        dSquare = square - 1;
+        while (dSquare >= (square-(square%WIDTH))) {
+            //check to see if the destination square is able to be moved to
+            if (board[dSquare] == -colour*ROOK || board[dSquare] == -colour*QUEEN) {
+                return true;
+            } else if(board[dSquare] != EMPTY){
+                break;
+            }
+            dSquare -= 1;
+        }
+
+        // To the right
+        dSquare = square + 1;
+        while (dSquare < (square-(square%WIDTH)+WIDTH)) {
+            //check to see if the destination square is able to be moved to
+            if (board[dSquare] == -colour*ROOK || board[dSquare] == -colour*QUEEN) {
+                return true;
+            } else if(board[dSquare] != EMPTY){
+                break;
+            }
+            dSquare += 1;
+        }
+
+        // To the bottom
+        dSquare = square + WIDTH;
+        while (dSquare < 64) {
+            //check to see if the destination square is able to be moved to
+            if (board[dSquare] == -colour*ROOK || board[dSquare] == -colour*QUEEN) {
+                return true;
+            } else if(board[dSquare] != EMPTY){
+                break;
+            }
+            dSquare += WIDTH;
+        }
+
+        //need to check along the 4 straights until we hit a friendly piece, an opponent, or the edge of the board
+        // up to left
+        dSquare = square - WIDTH - 1;
+        while (dSquare > 0 && dSquare%WIDTH >= 0) {
+            //check to see if the destination square is able to be moved to
+            if (board[dSquare] == -colour*BISHOP || board[dSquare] == -colour*QUEEN) {
+                return true;
+            } else if(board[dSquare] != EMPTY){
+                break;
+            }
+            dSquare -= (1+WIDTH);
+        }
+
+        // up to right
+        dSquare = square - WIDTH + 1;
+        while (dSquare > 0 && dSquare%WIDTH > 0) {
+            //check to see if the destination square is able to be moved to
+            if (board[dSquare] == -colour*BISHOP || board[dSquare] == -colour*QUEEN) {
+                return true;
+            } else if(board[dSquare] != EMPTY){
+                break;
+            }
+            dSquare -= (WIDTH-1);
+        }
+
+        // down to right
+        dSquare = square + WIDTH + 1;
+        while (dSquare < 64 && dSquare%WIDTH > 0) {
+            //check to see if the destination square is able to be moved to
+            if (board[dSquare] == -colour*BISHOP || board[dSquare] == -colour*QUEEN) {
+                return true;
+            } else if(board[dSquare] != EMPTY){
+                break;
+            }
+            dSquare += (WIDTH +1);
+        }
+
+        // down to left
+        dSquare = square + WIDTH -1;
+        while (dSquare < 64 && dSquare%WIDTH >= 0) {
+            //check to see if the destination square is able to be moved to
+            if (board[dSquare] == -colour*ROOK || board[dSquare] == -colour*QUEEN) {
+                return true;
+            } else if(board[dSquare] != EMPTY){
+                break;
+            }
+            dSquare += (WIDTH-1);
+        }
+
+        //check to see if a pawn can take
+
+        if(square%8 == 0) {
+            if (colour == WHITE) {
+                //check to the right
+                dSquare = square - (colour*7);
+                if(-colour*board[dSquare] == PAWN) {
+                    // we can take in this direction
+                    return true;
+                }
+            } else {
+                //check to the left
+                dSquare = square - (colour*9);
+                if(-colour*board[dSquare] == PAWN) {
+                    // we can take on this square
+                    return true;
+                }
+            }
+        } else if(square%8 == 7) {
+            if (colour == BLACK) {
+                //check to the right
+                dSquare = square - (colour*7);
+                if(-colour*board[dSquare] == PAWN) {
+                    // we can take in this direction
+                    return true;
+                }
+            } else {
+                //check to the left
+                dSquare = square - (colour*9);
+                if(-colour*board[dSquare] == PAWN) {
+                    // we can take on this square
+                    return true;
+                }
+            }
+        } else {
+            //check to the right
+            dSquare = square - (colour*7);
+            if(-colour*board[dSquare] == PAWN) {
+                // we can take in this direction
+                return true;
+            }
+
+            //check to the left
+            dSquare = square - (colour*9);
+            if(-colour*board[dSquare] == PAWN) {
+                // we can take on this square
+                return true;
+            }
+        }
+
+        //check to see if the king can capture
+
+        if(square%8 == 0) {
+            //on the left
+            if( square == 0 ){
+                //top left
+                for (int x=-1; x<=0;x++) {
+                    for (int y = 0; y<=1; y++) {
+
+                        dSquare = square + 8*x + y;
+
+                        if(-colour*board[dSquare] == KING) {
+                            // we can take in this direction
+                            return true;
+                        }
+                    }
+                }
+            } else if (square == 56) {
+                //bottom left
+                for (int x=0; x<=1;x++) {
+                    for (int y = 0; y<=1; y++) {
+
+                        dSquare = square + 8*x + y;
+
+                        if(-colour*board[dSquare] == KING) {
+                            // we can take in this direction
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                //left but check all other than those to the left
+                for (int x=-1; x<=1;x++) {
+                    for (int y = 0; y<=1; y++) {
+
+                        dSquare = square + 8*x + y;
+
+                        if(-colour*board[dSquare] == KING) {
+                            // we can take in this direction
+                            return true;
+                        }
+                    }
+                }
+            }
+        } else if (square%8 == 7) {
+            //on the right
+            if(square ==7) {
+                //top right
+                for (int x=0; x<=1;x++) {
+                    for (int y = -1; y<=0; y++) {
+
+                        dSquare = square + 8*x + y;
+
+                        if(-colour*board[dSquare] == KING) {
+                            // we can take in this direction
+                            return true;
+                        }
+                    }
+                }
+            } else if(square==63) {
+                //bottom right
+                for (int x=-1; x<=0;x++) {
+                    for (int y = -1; y<=0; y++) {
+
+                        dSquare = square + 8*x + y;
+
+                        if(-colour*board[dSquare] == KING) {
+                            // we can take in this direction
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                //right but check all other than those to the left
+                for (int x=-1; x<=1;x++) {
+                    for (int y = -1; y<=0; y++) {
+
+                        dSquare = square + 8*x + y;
+
+                        if(-colour*board[dSquare] == KING) {
+                            // we can take in this direction
+                            return true;
+                        }
+                    }
+                }
+            }
+        } else {
+            if(square<8) {
+                //bottom but not on left or right
+                for (int x=0; x<=1;x++) {
+                    for (int y = -1; y<=1; y++) {
+
+                        dSquare = square + 8*x + y;
+
+                        if(-colour*board[dSquare] == KING) {
+                            // we can take in this direction
+                            return true;
+                        }
+                    }
+                }
+            } else if (square>55) {
+                //top but not on left or right
+                for (int x=-1; x<=0;x++) {
+                    for (int y = -1; y<=1; y++) {
+
+                        dSquare = square + 8*x + y;
+
+                        if(-colour*board[dSquare] == KING) {
+                            // we can take in this direction
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                //not on any edge
+                for (int x=-1; x<=1;x++) {
+                    for (int y = -1; y<=1; y++) {
+
+                        dSquare = square + 8*x + y;
+
+                        if(-colour*board[dSquare] == KING) {
+                            // we can take in this direction
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 
     public void updateLastMove(int[] move) {
         lastMove = move;
@@ -1316,7 +1682,6 @@ public class Board {
         for(int i=0; i<8; i++){
             line = "";
             for(int j=0; j<8; j++){
-                //System.out.println(board[8*i+j].getIsWhite());
                 switch (board[8*i + j]) {
                     case EMPTY:
                         line = line + " . ";

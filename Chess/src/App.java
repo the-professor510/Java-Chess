@@ -10,7 +10,7 @@ public class App {
         //board.startingPosition();
         //board.printBoard();
 
-        board.readInFEN("rnbqkbnr/pppppppp/8/PpP5/8/8/PPPPPPPP/RNBQKBNR w KQkq b3 0 1");
+        board.readInFEN("rnbqkbnr/p1pppppp/P7/PpP5/8/8/PPPPPPPP/RNBQKBNR w KQkq b3 0 1");
         board.printBoard();
         board.updateFEN();
         System.out.println(board.getFEN());
@@ -29,35 +29,45 @@ public class App {
         board.printBoard();
         board.updateFEN();
         System.out.println(board.getFEN()); */
+        int[][] moves = {{}};
+        //int[] move = {};
         
         long epoch = System.currentTimeMillis();
 
-        board.generatePawnMoves(1);
-        board.generatePawnMoves(-1);
+        for(int i=0; i<100; i++) {
+            board.generatePawnMoves(1);
+            //board.generatePawnMoves(-1);
 
-        board.generateKingMoves(1);
-        board.generateKingMoves(-1);
+            board.generateKingMoves(1);
+            //board.generateKingMoves(-1);
 
-        board.generateRookMoves(1);
-        board.generateRookMoves(-1);
+            board.generateRookMoves(1);
+            //board.generateRookMoves(-1);
 
-        board.generateBishopMoves(1);
-        board.generateBishopMoves(-1);
+            board.generateBishopMoves(1);
+            //board.generateBishopMoves(-1);
 
-        board.generateQueenMoves(1);
-        board.generateQueenMoves(-1);
+            board.generateQueenMoves(1);
+            //board.generateQueenMoves(-1);
 
-        board.generateKnightMoves(1);
+            board.generateKnightMoves(1);
 
-        int[][] moves= board.generateEnPassant(1);
-        for(int[] i: moves) {
-            System.out.println("[" + i[0]+ " ," + i[1] + "]");
+            board.generateEnPassant(1);
         }
-
-
         long epoch2 = System.currentTimeMillis();
+        //for(int[] i: moves) {
+        //    System.out.println("[" + i[0]+ " ," + i[1] + "]");
+        //}
+
+
 
         System.out.println("\nTime to run: " + (epoch2-epoch) + "ms");
+        for(int i=0; i<64; i++) {
+            System.out.println("\n");
+            System.out.println(i);
+            System.out.println(board.isAttacked(1, i));
+            System.out.println(board.isAttacked(-1, i));
+        }
 
         //board.startingPosition();
         //board.printBoard();
