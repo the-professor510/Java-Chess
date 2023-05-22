@@ -1250,6 +1250,70 @@ public class Board {
         return output;
     }
 
+    public int[][] generateCastling(int input) {
+        ArrayList<int[]> moves = new ArrayList<int[]>();
+        int[] move = new int[2];
+
+        // check to see if it is possible for castling
+
+        if (input == WHITE){
+            //check to see if white can castle
+            if (castling[1]) {
+                //check if between the king and kingside rook is clear
+                // To the left
+
+                // check if between the king and right rook is empty
+
+                int startSquare = findPiece(input*KING)[0];
+                //boolean canCastle;
+                for (int i = startSquare+1; i<(WIDTH*WIDTH); i++){
+                    if(board[i] != EMPTY){
+                        //canCastle = false;
+                        break;
+                    }
+                }
+            }
+            if (castling[2]) {
+                // check if between the king and queenside rook is clear
+                int startSquare = findPiece(input*KING)[0];
+                for (int i = startSquare-1; i>(WIDTH*(WIDTH-1)+1); i--){
+                    if(board[i] != EMPTY){
+                        break;
+                    }
+                }
+            }
+        } else {
+            // check to see if black can castle
+            if (castling[3]) {
+                //check if between the king and kingside rook is clear
+                int startSquare = findPiece(input*KING)[0];
+                for (int i = startSquare+1; i<(WIDTH-1); i++){
+                    if(board[i] != EMPTY){
+                        break;
+                    }
+                }
+            }
+            if (castling[4]) {
+                // check if between the king and queenside rook is clear
+                int startSquare = findPiece(input*KING)[0];
+                for (int i = startSquare-1; i>0; i--){
+                    if(board[i] != EMPTY){
+                        break;
+                    }
+                }
+            }
+        }
+
+        int size = moves.size();
+
+        int[][] output = new int[size][2];
+        for(int i= 0; i<size; i++) {
+            output[i] = moves.get(i);
+        }
+
+        return output;
+    }
+
     public void generateMoves(int input) {
         int[][] allMoves;
 
@@ -1260,6 +1324,7 @@ public class Board {
         int[][] qMoves = this.generateQueenMoves(input);
         int[][] kMoves = this.generateKingMoves(input);
         int[][] ePMoves = this.generateEnPassant(input);
+        int[][] castlingMoves = this.generateCastling(input);
 
     }
 
@@ -1267,7 +1332,7 @@ public class Board {
      * checks if this square would put the king in check, i.e. if this square is underattack from the other player
      * inputs: int colour - the colour of the king which we want to check if it would be in check
      *         int square - the square of the piece which we want to check if it would be in check
-     * outputs: boolen - if the king would be in check in this position
+     * outputs: boolean - if the king would be in check in this position
      */
     public boolean isAttacked (int colour, int square) {
         //check around this square if it is attacked by any pieces
