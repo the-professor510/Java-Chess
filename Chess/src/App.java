@@ -31,7 +31,8 @@ public class App {
         System.out.println(board.getFEN()); */
         int[][] moves = {{}};
         //int[] move = {};
-        
+
+        /*
         long epoch = System.currentTimeMillis();
 
         for(int i=0; i<100; i++) {
@@ -61,7 +62,12 @@ public class App {
 
 
 
+
+
         System.out.println("\nTime to run: " + (epoch2-epoch) + "ms");
+        // */
+
+
         for(int i=0; i<64; i++) {
             System.out.println("\n");
             System.out.println(i);

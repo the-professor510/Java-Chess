@@ -583,9 +583,11 @@ public class Board {
                             dSquare = i + 8*x + y;
 
                             if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                move[1] = dSquare;
-                                moves.add(move.clone());
+                                if (!(isAttacked(input, dSquare))){
+                                    // we can take in this direction
+                                    move[1] = dSquare;
+                                    moves.add(move.clone());
+                                }
                             }
                         }
                     }
@@ -597,9 +599,11 @@ public class Board {
                             dSquare = i + 8*x + y;
 
                             if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                move[1] = dSquare;
-                                moves.add(move.clone());
+                                if (!(isAttacked(input, dSquare))){
+                                    // we can take in this direction
+                                    move[1] = dSquare;
+                                    moves.add(move.clone());
+                                }
                             }
                         }
                     }
@@ -611,9 +615,11 @@ public class Board {
                             dSquare = i + 8*x + y;
 
                             if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                move[1] = dSquare;
-                                moves.add(move.clone());
+                                if (!(isAttacked(input, dSquare))){
+                                    // we can take in this direction
+                                    move[1] = dSquare;
+                                    moves.add(move.clone());
+                                }
                             }
                         }
                     }
@@ -628,9 +634,11 @@ public class Board {
                             dSquare = i + 8*x + y;
 
                             if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                move[1] = dSquare;
-                                moves.add(move.clone());
+                                if (!(isAttacked(input, dSquare))){
+                                    // we can take in this direction
+                                    move[1] = dSquare;
+                                    moves.add(move.clone());
+                                }
                             }
                         }
                     }
@@ -642,9 +650,11 @@ public class Board {
                             dSquare = i + 8*x + y;
 
                             if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                move[1] = dSquare;
-                                moves.add(move.clone());
+                                if (!(isAttacked(input, dSquare))){
+                                    // we can take in this direction
+                                    move[1] = dSquare;
+                                    moves.add(move.clone());
+                                }
                             }
                         }
                     }
@@ -656,9 +666,11 @@ public class Board {
                             dSquare = i + 8*x + y;
 
                             if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                move[1] = dSquare;
-                                moves.add(move.clone());
+                                if (!(isAttacked(input, dSquare))){
+                                    // we can take in this direction
+                                    move[1] = dSquare;
+                                    moves.add(move.clone());
+                                }
                             }
                         }
                     }
@@ -672,9 +684,11 @@ public class Board {
                             dSquare = i + 8*x + y;
 
                             if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                move[1] = dSquare;
-                                moves.add(move.clone());
+                                if (!(isAttacked(input, dSquare))){
+                                    // we can take in this direction
+                                    move[1] = dSquare;
+                                    moves.add(move.clone());
+                                }
                             }
                         }
                     }
@@ -686,9 +700,11 @@ public class Board {
                             dSquare = i + 8*x + y;
 
                             if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                move[1] = dSquare;
-                                moves.add(move.clone());
+                                if (!(isAttacked(input, dSquare))){
+                                    // we can take in this direction
+                                    move[1] = dSquare;
+                                    moves.add(move.clone());
+                                }
                             }
                         }
                     }
@@ -700,9 +716,11 @@ public class Board {
                             dSquare = i + 8*x + y;
 
                             if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                move[1] = dSquare;
-                                moves.add(move.clone());
+                                if (!(isAttacked(input, dSquare))){
+                                    // we can take in this direction
+                                    move[1] = dSquare;
+                                    moves.add(move.clone());
+                                }
                             }
                         }
                     }
