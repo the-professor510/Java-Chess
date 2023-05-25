@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 
 public class Board {
-    private final int HEIGTH = 8;
-    private final int WIDTH = 8;
+    public final int HEIGTH = 8;
+    public final int WIDTH = 8;
 
     private final int WHITE = 1;
     private final int BLACK = -1;
@@ -22,7 +22,7 @@ public class Board {
     * 6) King
     */
     
-    private final int EMPTY = 0;
+    public final int EMPTY = 0;
     private final int PAWN = 1;
     private final int KNIGHT = 2;
     private final int BISHOP = 3;
@@ -42,13 +42,13 @@ public class Board {
 
     private final int NOENPASSANT = -1;
 
-    private int[] board = new int[HEIGTH*WIDTH];
+    private final int[] board = new int[HEIGTH*WIDTH];
 
-    private final int ENPASSANTMOVE = 64;
-    private final int WHITEQUEENSIDECASTLE = 65;
-    private final int WHITEKINGSIDECASTLE = 66;
-    private final int BLACKQUEENSIDECASTLE = 67;
-    private final int BLACKINGSIDECASTLE = 68;
+    public final int ENPASSANTMOVE = 64;
+    public final int WHITEQUEENSIDECASTLE = 65;
+    public final int WHITEKINGSIDECASTLE = 66;
+    public final int BLACKQUEENSIDECASTLE = 67;
+    public final int BLACKINGSIDECASTLE = 68;
     
     
 
@@ -110,20 +110,20 @@ public class Board {
 
                     
                 // Checks if the character represents a white piece
-                } else if(numberPlaced < 8){
+                } else if(numberPlaced < WIDTH){
                     if( Character.isUpperCase(c)){
                         if(c == 'P'){
-                            board[counter*8+(numberPlaced)] = (PAWN);
+                            board[counter*WIDTH+(numberPlaced)] = (PAWN);
                         } else if (c == 'R') {
-                            board[counter*8+(numberPlaced)] = (ROOK);
+                            board[counter*WIDTH+(numberPlaced)] = (ROOK);
                         } else if (c == 'N') {
-                            board[counter*8+(numberPlaced)] = (KNIGHT);
+                            board[counter*WIDTH+(numberPlaced)] = (KNIGHT);
                         } else if (c == 'B') {
-                            board[counter*8+(numberPlaced)] = (BISHOP);
+                            board[counter*WIDTH+(numberPlaced)] = (BISHOP);
                         } else if (c == 'Q') {
-                            board[counter*8+(numberPlaced)] = (QUEEN);
+                            board[counter*WIDTH+(numberPlaced)] = (QUEEN);
                         } else if (c == 'K') {
-                            board[counter*8+(numberPlaced)] = (KING);
+                            board[counter*WIDTH+(numberPlaced)] = (KING);
                         } else {
                             //error the FEN given is not suitable, exit out of this 
                             System.out.println("Given FEN is not suitable on rank " + (counter+1) + ", not recognised white piece");
@@ -134,17 +134,17 @@ public class Board {
                     // Checks if the character representsa black piece
                     } else if (Character.isLowerCase(c)){
                         if(c == 'p'){
-                            board[counter*8+(numberPlaced)] = (-PAWN);
+                            board[counter*WIDTH+(numberPlaced)] = (-PAWN);
                         } else if (c == 'r') {
-                            board[counter*8+(numberPlaced)] = (-ROOK);
+                            board[counter*WIDTH+(numberPlaced)] = (-ROOK);
                         } else if (c == 'n') {
-                            board[counter*8+(numberPlaced)] = (-KNIGHT);
+                            board[counter*WIDTH+(numberPlaced)] = (-KNIGHT);
                         } else if (c == 'b') {
-                            board[counter*8+(numberPlaced)] = (-BISHOP);
+                            board[counter*WIDTH+(numberPlaced)] = (-BISHOP);
                         } else if (c == 'q') {
-                            board[counter*8+(numberPlaced)] = (-QUEEN);
+                            board[counter*WIDTH+(numberPlaced)] = (-QUEEN);
                         } else if (c == 'k') {
-                            board[counter*8+(numberPlaced)] = (-KING);
+                            board[counter*WIDTH+(numberPlaced)] = (-KING);
                         } else {
                             //error the FEN given is not suitable, exit out of this
                             System.out.println("Given FEN is not suitable on rank " + (counter+1) + ", not recognised black piece");
@@ -170,11 +170,7 @@ public class Board {
         
         // whose move
         String turn = scannerFEN.next();
-        if(turn.toLowerCase().equals("w")) {
-            whitesTurn = true;
-        } else {
-            whitesTurn = false;
-        }
+        whitesTurn = turn.equalsIgnoreCase("w");
 
         // castling availability
         String castlingString = scannerFEN.next();
@@ -206,39 +202,23 @@ public class Board {
         if( c != '-' && pawnMove.length()>=2){
 
             int row = pawnMove.charAt(1) - '0';
-            int column = 0;
+            int column = -1;
             switch (c) {
-                case 'a':
-                    column = 0;
-                    break;
-                case 'b':
-                    column = 1;
-                    break;
-                case 'c':
-                    column = 2;
-                    break;
-                case 'd':
-                    column = 3;
-                    break;
-                case 'e':
-                    column = 4;
-                    break;
-                case 'f':
-                    column = 5;
-                    break;
-                case 'g':
-                    column = 6;
-                    break;
-                case 'h':
-                    column = 7;
-                    break;
-                default:
+                case 'a' -> column = 0;
+                case 'b' -> column = 1;
+                case 'c' -> column = 2;
+                case 'd' -> column = 3;
+                case 'e' -> column = 4;
+                case 'f' -> column = 5;
+                case 'g' -> column = 6;
+                case 'h' -> column = 7;
+                default -> {
                     enPassant = NOENPASSANT;
                     System.out.println(pawnMove);
-                    break;
+                }
             }
 
-            enPassant = row*WIDTH + column - 8;
+            enPassant = row*WIDTH + column - WIDTH;
         } else {
             enPassant = NOENPASSANT;
         }
@@ -266,7 +246,7 @@ public class Board {
 
     public void updateFEN(){
 
-        String generatedFEN = new String();
+        StringBuilder generatedFEN = new StringBuilder();
 
         int numBlank = 0;
 
@@ -277,73 +257,49 @@ public class Board {
 
                 if(tempSquare != EMPTY){
                     if(numBlank != 0){
-                        generatedFEN += numBlank;
+                        generatedFEN.append(numBlank);
                     }
                     numBlank = 0;
-                    
+
                     switch (tempSquare) {
-                        case PAWN:
-                            generatedFEN += "P";
-                            break;
-                        case ROOK:
-                            generatedFEN += "R";
-                            break;
-                        case KNIGHT:
-                            generatedFEN += "N";
-                            break;
-                        case BISHOP:
-                            generatedFEN += "B";
-                            break;
-                        case QUEEN:
-                            generatedFEN += "Q";
-                            break;
-                        case KING:
-                            generatedFEN += "K";
-                            break;
-                        case (-PAWN):
-                            generatedFEN += "p";
-                            break;
-                        case (-ROOK):
-                            generatedFEN += "r";
-                            break;
-                        case (-KNIGHT):
-                            generatedFEN += "n";
-                            break;
-                        case (-BISHOP):
-                            generatedFEN += "b";
-                            break;
-                        case (-QUEEN):
-                            generatedFEN += "q";
-                            break;
-                        case (-KING):
-                            generatedFEN += "k";
-                            break;
-                        default:
-                            generatedFEN += "";
+                        case PAWN -> generatedFEN.append("P");
+                        case ROOK -> generatedFEN.append("R");
+                        case KNIGHT -> generatedFEN.append("N");
+                        case BISHOP -> generatedFEN.append("B");
+                        case QUEEN -> generatedFEN.append("Q");
+                        case KING -> generatedFEN.append("K");
+                        case (-PAWN) -> generatedFEN.append("p");
+                        case (-ROOK) -> generatedFEN.append("r");
+                        case (-KNIGHT) -> generatedFEN.append("n");
+                        case (-BISHOP) -> generatedFEN.append("b");
+                        case (-QUEEN) -> generatedFEN.append("q");
+                        case (-KING) -> generatedFEN.append("k");
+                        default -> {
+                        }
                     }
                 } else {
                     numBlank +=1;
                 }
             }
             if(numBlank != 0){
-                generatedFEN += numBlank;
+                generatedFEN.append(numBlank);
             }
-            generatedFEN+= "/";
+            generatedFEN.append("/");
         }
-        generatedFEN = generatedFEN.substring(0, generatedFEN.length()-1);
+        generatedFEN = new StringBuilder(generatedFEN.substring(0, generatedFEN.length() - 1));
 
         // generate if it is whites turn
         if (whitesTurn) {
-            generatedFEN += " w";
+            generatedFEN.append(" w");
         } else {
-            generatedFEN += " b";
+            generatedFEN.append(" b");
         }
 
 
         //castling
-        generatedFEN += " ";
+        generatedFEN.append(" ");
         String castlingString = "";
-        if(castling[0] == false && castling[1] == false && castling[2] == false && castling[3] == false) {
+        if(!castling[0] && !castling[1] && !castling[2] && !castling[3]) {
             castlingString = "-";
         } else {
             if (castling[1]) {
@@ -359,7 +315,7 @@ public class Board {
                 castlingString += "q";
             }
         } 
-        generatedFEN += castlingString;
+        generatedFEN.append(castlingString);
 
         //enPassant
         if (enPassant != NOENPASSANT) {
@@ -368,68 +324,36 @@ public class Board {
             int row = (enPassant - column)/HEIGTH;
 
             switch (column) {
-                case 0:
-                    generatedFEN += " a";
-                    break;
-                case 1:
-                    generatedFEN += " b";
-                    break;
-                case 2:
-                    generatedFEN += " c";
-                    break;
-                case 3:
-                    generatedFEN += " d";
-                    break;
-                case 4:
-                    generatedFEN += " e";
-                    break;
-                case 5:
-                    generatedFEN += " f";
-                    break;
-                case 6:
-                    generatedFEN += " g";
-                    break;
-                case 7:
-                    generatedFEN += " h";
-                    break;
+                case 0 -> generatedFEN.append(" a");
+                case 1 -> generatedFEN.append(" b");
+                case 2 -> generatedFEN.append(" c");
+                case 3 -> generatedFEN.append(" d");
+                case 4 -> generatedFEN.append(" e");
+                case 5 -> generatedFEN.append(" f");
+                case 6 -> generatedFEN.append(" g");
+                case 7 -> generatedFEN.append(" h");
             }
             switch (row) {
-                case 0:
-                    generatedFEN += "8";
-                    break;
-                case 1:
-                    generatedFEN += "7";
-                    break;
-                case 2:
-                    generatedFEN += "6";
-                    break;
-                case 3:
-                    generatedFEN += "5";
-                    break;
-                case 4:
-                    generatedFEN += "4";
-                    break;
-                case 5:
-                    generatedFEN += "3";
-                    break;
-                case 6:
-                    generatedFEN += "2";
-                    break;
-                case 7:
-                    generatedFEN += "1";
-                    break;
+                case 0 -> generatedFEN.append("8");
+                case 1 -> generatedFEN.append("7");
+                case 2 -> generatedFEN.append("6");
+                case 3 -> generatedFEN.append("5");
+                case 4 -> generatedFEN.append("4");
+                case 5 -> generatedFEN.append("3");
+                case 6 -> generatedFEN.append("2");
+                case 7 -> generatedFEN.append("1");
             }
         } else {
-            generatedFEN += " -";
+            generatedFEN.append(" -");
         }
 
         //half move
-        generatedFEN += (" " + halfmove);
+        generatedFEN.append(" ").append(halfmove);
 
         //full move
-        generatedFEN += (" " + fullmove);
+        generatedFEN.append(" ").append(fullmove);
 
-        FEN = generatedFEN;
+        FEN = generatedFEN.toString();
 
     }
 
@@ -457,7 +381,7 @@ public class Board {
      * outputs: [[start square, destination square]]
      */
     public int[][] generatePawnMoves(int input) {
-        //want to find all of the pawns for the correct colour
+        //want to find all the pawns for the correct colour
         int dSquare;
         ArrayList<int[]> moves = new ArrayList<int[]>();
         int[] move = new int[2];
@@ -471,7 +395,7 @@ public class Board {
             //forward moves
             dSquare = i-(input*WIDTH);
             if(board[dSquare] == EMPTY){
-                //able to make to make a move infront
+                //able to make a move infront
                 move[1] = dSquare;
                 moves.add(move.clone());
 
@@ -491,45 +415,37 @@ public class Board {
             }
 
             //taking
-            if(i%8 == 0) {
+            if(i%WIDTH == 0) {
+                // we can take on this square
                 if (input == WHITE) {
                     //check to the right
-                    dSquare = i - (input*7);
-                    if(input*board[dSquare] < EMPTY) {
-                        // we can take in this direction
-                        move[1] = dSquare;
-                        moves.add(move.clone());
-                    }
+                    dSquare = i - (input*(WIDTH-1));
                 } else {
                     //check to the left
-                    dSquare = i - (input*9);
-                    if(input*board[dSquare] < EMPTY) {
-                        // we can take on this square
-                        move[1] = dSquare;
-                        moves.add(move.clone());
-                    }
+                    dSquare = i - (input*(WIDTH+1));
                 }
-            } else if(i%8 == 7) {
+                if(input*board[dSquare] < EMPTY) {
+                    // we can take in this direction
+                    move[1] = dSquare;
+                    moves.add(move.clone());
+                }
+            } else if(i%WIDTH == (WIDTH-1)) {
+                // we can take on this square
                 if (input == BLACK) {
                     //check to the right
-                    dSquare = i - (input*7);
-                    if(input*board[dSquare] < EMPTY) {
-                        // we can take in this direction
-                        move[1] = dSquare;
-                        moves.add(move.clone());
-                    }
+                    dSquare = i - (input*(WIDTH-1));
                 } else {
                     //check to the left
-                    dSquare = i - (input*9);
-                    if(input*board[dSquare] < EMPTY) {
-                        // we can take on this square
-                        move[1] = dSquare;
-                        moves.add(move.clone());
-                    }
+                    dSquare = i - (input*(WIDTH+1));
+                }
+                if(input*board[dSquare] < EMPTY) {
+                    // we can take in this direction
+                    move[1] = dSquare;
+                    moves.add(move.clone());
                 }
             } else {
                 //check to the right
-                dSquare = i - (input*7);
+                dSquare = i - (input*(WIDTH-1));
                 if(input*board[dSquare] < EMPTY) {
                     // we can take in this direction
                     move[1] = dSquare;
@@ -537,7 +453,7 @@ public class Board {
                 }
 
                 //check to the left
-                dSquare = i - (input*9);
+                dSquare = i - (input*(WIDTH+1));
                 if(input*board[dSquare] < EMPTY) {
                     // we can take on this square
                     move[1] = dSquare;
@@ -562,7 +478,7 @@ public class Board {
      */
     public int[][] generateKingMoves(int input) {
 
-        //want to find all of the kings for the correct colour
+        //want to find all the kings for the correct colour
         int dSquare;
         ArrayList<int[]> moves = new ArrayList<int[]>();
         int[] move = new int[2];
@@ -573,14 +489,14 @@ public class Board {
             //check all 8 squares around the king
             move[0] = i;
 
-            if(i%8 == 0) {
+            if(i%WIDTH == 0) {
                 //on the left
                 if( i == 0 ){
                     //top left
-                    for (int x=-1; x<=0;x++) {
+                    for (int x=0; x<=1;x++) {
                         for (int y = 0; y<=1; y++) {
 
-                            dSquare = i + 8*x + y;
+                            dSquare = i + WIDTH*y + x;
 
                             if(input*board[dSquare] <= EMPTY) {
                                 if (!(isAttacked(input, dSquare))){
@@ -591,12 +507,12 @@ public class Board {
                             }
                         }
                     }
-                } else if (i == 56) {
+                } else if (i == (WIDTH*(WIDTH-1))) {
                     //bottom left
                     for (int x=0; x<=1;x++) {
-                        for (int y = 0; y<=1; y++) {
+                        for (int y = -1; y<=0; y++) {
 
-                            dSquare = i + 8*x + y;
+                            dSquare = i + WIDTH*y + x;
 
                             if(input*board[dSquare] <= EMPTY) {
                                 if (!(isAttacked(input, dSquare))){
@@ -609,10 +525,10 @@ public class Board {
                     }
                 } else {
                     //left but check all other than those to the left
-                    for (int x=-1; x<=1;x++) {
-                        for (int y = 0; y<=1; y++) {
+                    for (int x=0; x<=1;x++) {
+                        for (int y = -1; y<=1; y++) {
 
-                            dSquare = i + 8*x + y;
+                            dSquare = i + WIDTH*y + x;
 
                             if(input*board[dSquare] <= EMPTY) {
                                 if (!(isAttacked(input, dSquare))){
@@ -624,14 +540,14 @@ public class Board {
                         }
                     }
                 }
-            } else if (i%8 == 7) {
+            } else if (i%WIDTH == (WIDTH-1)) {
                 //on the right
-                if(i ==7) {
+                if(i ==(WIDTH-1)) {
                     //top right
-                    for (int x=0; x<=1;x++) {
-                        for (int y = -1; y<=0; y++) {
+                    for (int x=-1; x<=0;x++) {
+                        for (int y = 0; y<=1; y++) {
 
-                            dSquare = i + 8*x + y;
+                            dSquare = i + WIDTH*y + x;
 
                             if(input*board[dSquare] <= EMPTY) {
                                 if (!(isAttacked(input, dSquare))){
@@ -647,7 +563,7 @@ public class Board {
                     for (int x=-1; x<=0;x++) {
                         for (int y = -1; y<=0; y++) {
 
-                            dSquare = i + 8*x + y;
+                            dSquare = i + WIDTH*y + x;
 
                             if(input*board[dSquare] <= EMPTY) {
                                 if (!(isAttacked(input, dSquare))){
@@ -660,10 +576,10 @@ public class Board {
                     }
                 } else {
                     //right but check all other than those to the left
-                    for (int x=-1; x<=1;x++) {
-                        for (int y = -1; y<=0; y++) {
+                    for (int x=-1; x<=0;x++) {
+                        for (int y = -1; y<=1; y++) {
 
-                            dSquare = i + 8*x + y;
+                            dSquare = i + WIDTH*y + x;
 
                             if(input*board[dSquare] <= EMPTY) {
                                 if (!(isAttacked(input, dSquare))){
@@ -676,12 +592,12 @@ public class Board {
                     }
                 }
             } else {
-                if(i<8) {
+                if(i<WIDTH) {
                     //bottom but not on left or right
-                    for (int x=0; x<=1;x++) {
-                        for (int y = -1; y<=1; y++) {
+                    for (int x=-1; x<=1;x++) {
+                        for (int y = 0; y<=1; y++) {
 
-                            dSquare = i + 8*x + y;
+                            dSquare = i + WIDTH*y + x;
 
                             if(input*board[dSquare] <= EMPTY) {
                                 if (!(isAttacked(input, dSquare))){
@@ -694,10 +610,10 @@ public class Board {
                     }
                 } else if (i>55) {
                     //top but not on left or right
-                    for (int x=-1; x<=0;x++) {
-                        for (int y = -1; y<=1; y++) {
+                    for (int x=-1; x<=1;x++) {
+                        for (int y = -1; y<=0; y++) {
 
-                            dSquare = i + 8*x + y;
+                            dSquare = i + WIDTH*y + x;
 
                             if(input*board[dSquare] <= EMPTY) {
                                 if (!(isAttacked(input, dSquare))){
@@ -713,7 +629,7 @@ public class Board {
                     for (int x=-1; x<=1;x++) {
                         for (int y = -1; y<=1; y++) {
 
-                            dSquare = i + 8*x + y;
+                            dSquare = i + WIDTH*y + x;
 
                             if(input*board[dSquare] <= EMPTY) {
                                 if (!(isAttacked(input, dSquare))){
@@ -855,7 +771,7 @@ public class Board {
             //need to check along the 4 straights until we hit a friendly piece, an opponent, or the edge of the board
             // up to left
             dSquare = i - WIDTH - 1;
-            while (dSquare > 0 && dSquare%WIDTH >= 0) {
+            while (dSquare%WIDTH > 0) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
                     move[1] = dSquare;
@@ -872,7 +788,7 @@ public class Board {
 
             // up to right
             dSquare = i - WIDTH + 1;
-            while (dSquare > 0 && dSquare%WIDTH > 0) {
+            while (dSquare > 0 && (dSquare%WIDTH) < (WIDTH-1)) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
                     move[1] = dSquare;
@@ -889,7 +805,7 @@ public class Board {
 
             // down to right
             dSquare = i + WIDTH + 1;
-            while (dSquare < 64 && dSquare%WIDTH > 0) {
+            while (dSquare < 64 && (dSquare%WIDTH) < (WIDTH-1)) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
                     move[1] = dSquare;
@@ -906,7 +822,7 @@ public class Board {
 
             // down to left
             dSquare = i + WIDTH -1;
-            while (dSquare < 64 && dSquare%WIDTH >= 0) {
+            while (dSquare < 64 && dSquare%WIDTH > 0) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
                     move[1] = dSquare;
@@ -1020,7 +936,7 @@ public class Board {
             //need to check along the 4 straights until we hit a friendly piece, an opponent, or the edge of the board
             // up to left
             dSquare = i - WIDTH - 1;
-            while (dSquare > 0 && dSquare%WIDTH >= 0) {
+            while (dSquare%WIDTH >= 0) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
                     move[1] = dSquare;
@@ -1037,7 +953,7 @@ public class Board {
 
             // up to right
             dSquare = i - WIDTH + 1;
-            while (dSquare > 0 && dSquare%WIDTH > 0) {
+            while (dSquare > 0 && (dSquare%WIDTH) < (WIDTH-1)) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
                     move[1] = dSquare;
@@ -1054,7 +970,7 @@ public class Board {
 
             // down to right
             dSquare = i + WIDTH + 1;
-            while (dSquare < 64 && dSquare%WIDTH > 0) {
+            while (dSquare < 64 && (dSquare%WIDTH) < (WIDTH-1)) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
                     move[1] = dSquare;
@@ -1071,7 +987,7 @@ public class Board {
 
             // down to left
             dSquare = i + WIDTH -1;
-            while (dSquare < 64 && dSquare%WIDTH >= 0) {
+            while (dSquare < 64 && dSquare%WIDTH > 0) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
                     move[1] = dSquare;
@@ -1216,23 +1132,22 @@ public class Board {
 
         //check if we have a en passant move available
         if(enPassant == NOENPASSANT) {
-            int[][] output = {{}};
-            return output;
+            return new int[][]{{}};
         } else {
             move[1] = ENPASSANTMOVE;
             //check to see if their is a pawn in the position
-            int sSquare = enPassant + input*9;
+            int sSquare = enPassant + input*(WIDTH+1);
             int row = (sSquare - sSquare%WIDTH)/WIDTH;
-            if( row == ((enPassant - enPassant%WIDTH)/WIDTH+input*1)) {
+            if( row == ((enPassant - enPassant%WIDTH)/WIDTH+ input)) {
                 if (board[sSquare] == input*PAWN) {
                     move[0] = sSquare;
                     moves.add(move.clone());
                 }
             }
 
-            sSquare = enPassant+ input*7;
+            sSquare = enPassant+ input*(WIDTH-1);
             row = (sSquare - sSquare%WIDTH)/WIDTH;
-            if( row == ((enPassant - enPassant%WIDTH)/WIDTH+input*1)) {
+            if( row == ((enPassant - enPassant%WIDTH)/WIDTH+ input)) {
                 if (board[sSquare] == input*PAWN) {
                     move[0] = sSquare;
                     moves.add(move.clone());
@@ -1329,7 +1244,7 @@ public class Board {
     }
 
     /*
-     * checks if this square would put the king in check, i.e. if this square is underattack from the other player
+     * checks if this square would put the king in check, i.e. if this square is under attack from the other player
      * inputs: int colour - the colour of the king which we want to check if it would be in check
      *         int square - the square of the piece which we want to check if it would be in check
      * outputs: boolean - if the king would be in check in this position
@@ -1473,21 +1388,9 @@ public class Board {
         }
 
         //need to check along the 4 straights until we hit a friendly piece, an opponent, or the edge of the board
-        // up to left
-        dSquare = square - WIDTH - 1;
-        while (dSquare > 0 && (dSquare%WIDTH) < (WIDTH-1)) {
-            //check to see if the destination square is able to be moved to
-            if (board[dSquare] == -colour*BISHOP || board[dSquare] == -colour*QUEEN) {
-                return true;
-            } else if(board[dSquare] != EMPTY){
-                break;
-            }
-            dSquare -= (1+WIDTH);
-        }
-
         // up to right
         dSquare = square - WIDTH + 1;
-        while (dSquare > 0 && dSquare%WIDTH > 0) {
+        while (dSquare > 0 && (dSquare%WIDTH) < (WIDTH-1)) {
             //check to see if the destination square is able to be moved to
             if (board[dSquare] == -colour*BISHOP || board[dSquare] == -colour*QUEEN) {
                 return true;
@@ -1497,8 +1400,20 @@ public class Board {
             dSquare -= (WIDTH-1);
         }
 
-        // down to right
-        dSquare = square + WIDTH + 1;
+        // up to left
+        dSquare = square - WIDTH - 1;
+        while (dSquare%WIDTH > 0) {
+            //check to see if the destination square is able to be moved to
+            if (board[dSquare] == -colour*BISHOP || board[dSquare] == -colour*QUEEN) {
+                return true;
+            } else if(board[dSquare] != EMPTY){
+                break;
+            }
+            dSquare -= (WIDTH+1);
+        }
+
+        // down to left
+        dSquare = square + WIDTH - 1;
         while (dSquare < 64 && dSquare%WIDTH > 0) {
             //check to see if the destination square is able to be moved to
             if (board[dSquare] == -colour*BISHOP || board[dSquare] == -colour*QUEEN) {
@@ -1506,11 +1421,11 @@ public class Board {
             } else if(board[dSquare] != EMPTY){
                 break;
             }
-            dSquare += (WIDTH +1);
+            dSquare += (WIDTH -1);
         }
 
-        // down to left
-        dSquare = square + WIDTH -1;
+        // down to right
+        dSquare = square + WIDTH +1;
         while (dSquare < 64 && (dSquare%WIDTH) < (WIDTH-1)) {
             //check to see if the destination square is able to be moved to
             if (board[dSquare] == -colour*BISHOP || board[dSquare] == -colour*QUEEN) {
@@ -1518,7 +1433,7 @@ public class Board {
             } else if(board[dSquare] != EMPTY){
                 break;
             }
-            dSquare += (WIDTH-1);
+            dSquare += (WIDTH+1);
         }
 
         //check to see if a pawn can take
@@ -1723,7 +1638,7 @@ public class Board {
 
     ///*
     // * inputs int[2]: [start square, destination square]
-    // * outputs int[4]: [start square, desitination square, piece moved, piece at destination square]
+    // * outputs int[4]: [start square, destination square, piece moved, piece at destination square]
     //*/
 
     public int[] makeMove(int[] inputs) {
@@ -1733,19 +1648,14 @@ public class Board {
         int sSquare = board[start];
         int dSquare = board[destination];
 
-        int pieceMoved = sSquare;
-        int pieceAtDestination = dSquare;
-
         updateSquare(sSquare, EMPTY);
-        updateSquare(dSquare, pieceMoved);
+        updateSquare(dSquare, sSquare);
 
-        int[] output = {start,destination,pieceMoved,pieceAtDestination};
-
-        return output;
+        return new int[]{start,destination, sSquare, dSquare};
     }
 
     /*
-     * inputs int[4]: [start square, desitination square, piece moved, piece at destination square]
+     * inputs int[4]: [start square, destination square, piece moved, piece at destination square]
      */
     public void unMakeMove(int[] inputs){
         int start = inputs[0];
@@ -1766,57 +1676,29 @@ public class Board {
 
     public void printBoard(){
 
-        System.out.println("");
-        String line = new String("");
-        for(int i=0; i<8; i++){
-            line = "";
-            for(int j=0; j<8; j++){
-                switch (board[8*i + j]) {
-                    case EMPTY:
-                        line = line + " . ";
-                        break;
-                    case PAWN:
-                        line += " P ";
-                        break;
-                    case KNIGHT:
-                        line += " N ";
-                        break;
-                    case BISHOP:
-                        line += " B ";
-                        break;
-                    case ROOK:
-                        line += " R ";
-                        break;
-                    case QUEEN:
-                        line += " Q ";
-                        break;
-                    case KING:
-                        line += " K ";
-                        break;
-                    case (-PAWN):
-                        line += " p ";
-                        break;
-                    case (-KNIGHT):
-                        line += " n ";
-                        break;
-                    case (-BISHOP):
-                        line += " b ";
-                        break;
-                    case (-ROOK):
-                        line += " r ";
-                        break;
-                    case (-QUEEN):
-                        line += " q ";
-                        break;
-                    case (-KING):
-                        line += " k ";
-                        break;
-                    default:
-                        line += " . ";
+        System.out.println();
+        StringBuilder line;
+        for(int i=0; i<WIDTH; i++){
+            line = new StringBuilder();
+            for(int j=0; j<WIDTH; j++){
+                switch (board[WIDTH * i + j]) {
+                    case PAWN -> line.append(" P ");
+                    case KNIGHT -> line.append(" N ");
+                    case BISHOP -> line.append(" B ");
+                    case ROOK -> line.append(" R ");
+                    case QUEEN -> line.append(" Q ");
+                    case KING -> line.append(" K ");
+                    case (-PAWN) -> line.append(" p ");
+                    case (-KNIGHT) -> line.append(" n ");
+                    case (-BISHOP) -> line.append(" b ");
+                    case (-ROOK) -> line.append(" r ");
+                    case (-QUEEN) -> line.append(" q ");
+                    case (-KING) -> line.append(" k ");
+                    default -> line.append(" . ");
                 }
             }
             System.out.println(line);
         }
-        System.out.println("");
+        System.out.println();
     }
 }

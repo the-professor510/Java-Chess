@@ -71,6 +71,7 @@ public class App {
         for(int i=0; i<64; i++) {
             System.out.println("\n");
             System.out.println(i);
+            System.out.println(new Game().squareNumbertoNotation(i));
             System.out.println(board.isAttacked(1, i));
             System.out.println(board.isAttacked(-1, i));
         }
