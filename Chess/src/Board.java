@@ -1135,7 +1135,7 @@ public class Board {
             return new int[][]{{}};
         } else {
             move[1] = ENPASSANTMOVE;
-            //check to see if their is a pawn in the position
+            //check to see if there is a pawn in the position
             int sSquare = enPassant + input*(WIDTH+1);
             int row = (sSquare - sSquare%WIDTH)/WIDTH;
             if( row == ((enPassant - enPassant%WIDTH)/WIDTH+ input)) {
@@ -1182,9 +1182,12 @@ public class Board {
                 int startSquare = findPiece(input*KING)[0];
                 //boolean canCastle;
                 for (int i = startSquare+1; i<(WIDTH*WIDTH); i++){
-                    if(board[i] != EMPTY){
+                    if(board[i] != EMPTY || isAttacked(input,board[i])){
                         //canCastle = false;
                         break;
+                    } else {
+                        move[1] = WHITEKINGSIDECASTLE;
+                        moves.add(move.clone());
                     }
                 }
             }
@@ -1192,8 +1195,11 @@ public class Board {
                 // check if between the king and queenside rook is clear
                 int startSquare = findPiece(input*KING)[0];
                 for (int i = startSquare-1; i>(WIDTH*(WIDTH-1)+1); i--){
-                    if(board[i] != EMPTY){
+                    if(board[i] != EMPTY || isAttacked(input,board[i])){
                         break;
+                    } else {
+                        move[1] = WHITEQUEENSIDECASTLE;
+                        moves.add(move.clone());
                     }
                 }
             }
@@ -1203,8 +1209,11 @@ public class Board {
                 //check if between the king and kingside rook is clear
                 int startSquare = findPiece(input*KING)[0];
                 for (int i = startSquare+1; i<(WIDTH-1); i++){
-                    if(board[i] != EMPTY){
+                    if(board[i] != EMPTY || isAttacked(input,board[i])){
                         break;
+                    } else {
+                        move[1] = BLACKINGSIDECASTLE;
+                        moves.add(move.clone());
                     }
                 }
             }
@@ -1212,8 +1221,11 @@ public class Board {
                 // check if between the king and queenside rook is clear
                 int startSquare = findPiece(input*KING)[0];
                 for (int i = startSquare-1; i>0; i--){
-                    if(board[i] != EMPTY){
+                    if(board[i] != EMPTY || isAttacked(input,board[i])){
                         break;
+                    } else {
+                        move[1] = BLACKQUEENSIDECASTLE;
+                        moves.add(move.clone());
                     }
                 }
             }
@@ -1645,13 +1657,107 @@ public class Board {
         int start = inputs[0];
         int destination = inputs[1];
 
-        int sSquare = board[start];
-        int dSquare = board[destination];
+        int sSquare = EMPTY;
+        int dSquare = EMPTY;
 
-        updateSquare(sSquare, EMPTY);
-        updateSquare(dSquare, sSquare);
+        switch (destination) {
+            case ENPASSANTMOVE -> {
+                //make an en passant move
+                sSquare = board[start];
+                dSquare = enPassant;
+                updateSquare(start, EMPTY); //start square is empty
+                updateSquare(start - WIDTH * (board[start] / Math.abs(board[start])), EMPTY); //square with pawn on it is made empty
+                updateSquare(enPassant, sSquare); //square behind pawn is filled
 
-        return new int[]{start,destination, sSquare, dSquare};
+                enPassant = NOENPASSANT;
+            }
+            //return new int[]{start, destination,sSquare,dSquare};
+            case WHITEKINGSIDECASTLE -> {
+                //make white king side castle
+                updateSquare(start, EMPTY); //make king square empty
+                updateSquare(WIDTH * WIDTH, EMPTY); // make rook square empty
+                updateSquare(start + 2, KING); // move king two to the right
+                updateSquare(start + 1, ROOK); // move rook two to the left
+                if (castling[1]) {
+                    sSquare = 1;
+                }
+                if (castling[2]) {
+                    dSquare = 1;
+                }
+
+                castling[1] = false;
+                castling[2] = false;
+
+            }
+            case WHITEQUEENSIDECASTLE -> {
+                //make white king side castle
+                updateSquare(start, EMPTY); //make king square empty
+                updateSquare(WIDTH * (WIDTH - 1), EMPTY); // make rook square empty
+                updateSquare(start - 2, KING); // move king two to the right
+                updateSquare(start - 1, ROOK); // move rook two to the left
+
+                if (castling[1]) {
+                    sSquare = 1;
+                }
+                if (castling[2]) {
+                    dSquare = 1;
+                }
+
+                castling[1] = false;
+                castling[2] = false;
+            }
+            case BLACKINGSIDECASTLE -> {
+                //make white king side castle
+                updateSquare(start, EMPTY); //make king square empty
+                updateSquare(WIDTH, EMPTY); // make rook square empty
+                updateSquare(start + 2, -KING); // move king two to the right
+                updateSquare(start + 1, -ROOK); // move rook two to the left
+
+                if (castling[3]) {
+                    sSquare = 1;
+                }
+                if (castling[4]) {
+                    dSquare = 1;
+                }
+
+                castling[3] = false;
+                castling[4] = false;
+            }
+            case BLACKQUEENSIDECASTLE -> {
+                //make white king side castle
+                updateSquare(start, EMPTY); //make king square empty
+                updateSquare(0, EMPTY); // make rook square empty
+                updateSquare(start - 2, -KING); // move king two to the right
+                updateSquare(start - 1, -ROOK); // move rook two to the left
+
+                if (castling[3]) {
+                    sSquare = 1;
+                }
+                if (castling[4]) {
+                    dSquare = 1;
+                }
+
+                castling[3] = false;
+                castling[4] = false;
+            }
+            default -> {
+                sSquare = board[start];
+                dSquare = board[destination];
+                updateSquare(start, EMPTY);
+                updateSquare(destination, sSquare);
+
+                //need to check if it means that castling cannot happen
+                if(sSquare == KING) {
+                    castling[0] = false;
+                    castling[1] = false;
+                } else if (sSquare == -KING) {
+                    castling[3] = false;
+                    castling[4] = false;
+                }
+            }
+        }
+
+        return new int[]{start,destination, sSquare, dSquare,};
     }
 
     /*
@@ -1663,15 +1769,90 @@ public class Board {
         int pieceMoved = inputs[2];
         int pieceAtDestination = inputs[3];
 
-        int sSquare = board[start];
-        int dSquare = board[destination];
+        int sSquare = EMPTY;
+        int dSquare = EMPTY;
 
-        updateSquare(sSquare, pieceMoved);
-        updateSquare(dSquare, pieceAtDestination);
+        //NOT COMPLETE NEED GO
+        switch (destination) {
+            case ENPASSANTMOVE -> {
+                //unmake an en passant move
+
+                enPassant = pieceAtDestination; //for en passant pieceAtDestination the en Passant square
+
+                updateSquare(start, pieceMoved); //start square is old pawn
+                updateSquare(start - WIDTH * (board[start] / Math.abs(board[start])), -pieceMoved); //square with pawn on it is made empty
+                updateSquare(enPassant, EMPTY); //square behind pawn is filled
+            }
+            //return new int[]{start, destination,sSquare,dSquare};
+            case WHITEKINGSIDECASTLE -> {
+                //unmake white king side castle
+                updateSquare(start, KING); //make king square empty
+                updateSquare(WIDTH * WIDTH, ROOK); // make rook square empty
+                updateSquare(start + 2, EMPTY); // move king two to the right
+                updateSquare(start + 1, EMPTY); // move rook two to the left
+
+                if (pieceMoved == 1) {
+                    castling[1] = true;
+                }
+                if (pieceAtDestination ==1) {
+                    castling[2] = true;
+                }
+            }
+            case WHITEQUEENSIDECASTLE -> {
+                //unmake white king side castle
+                updateSquare(start, KING); //make king square empty
+                updateSquare(WIDTH * (WIDTH - 1), ROOK); // make rook square empty
+                updateSquare(start - 2, EMPTY); // move king two to the right
+                updateSquare(start - 1, EMPTY); // move rook two to the left
+
+                if (pieceMoved == 1) {
+                    castling[1] = true;
+                }
+                if (pieceAtDestination ==1) {
+                    castling[2] = true;
+                }
+            }
+            case BLACKINGSIDECASTLE -> {
+                //unmake white king side castle
+                updateSquare(start, -KING); //make king square empty
+                updateSquare(WIDTH, -ROOK); // make rook square empty
+                updateSquare(start + 2, EMPTY); // move king two to the right
+                updateSquare(start + 1, EMPTY); // move rook two to the left
+
+                if (pieceMoved == 1) {
+                    castling[3] = true;
+                }
+                if (pieceAtDestination ==1) {
+                    castling[4] = true;
+                }
+            }
+            case BLACKQUEENSIDECASTLE -> {
+                //unmake white king side castle
+                updateSquare(start, -KING); //make king square empty
+                updateSquare(0, -KING); // make rook square empty
+                updateSquare(start - 2, EMPTY); // move king two to the right
+                updateSquare(start - 1, EMPTY); // move rook two to the left
+
+                if (pieceMoved == 1) {
+                    castling[3] = true;
+                }
+                if (pieceAtDestination ==1) {
+                    castling[4] = true;
+                }
+            }
+            default -> {
+                sSquare = board[start];
+                dSquare = board[destination];
+
+                updateSquare(sSquare, pieceMoved);
+                updateSquare(dSquare, pieceAtDestination);
+
+            }
+        }
     }
 
     private void updateSquare(int square, int newPiece){
-        square = (newPiece);
+        board[square] = (newPiece);
     }
 
     public void printBoard(){
