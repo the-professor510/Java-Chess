@@ -10,15 +10,16 @@ public class App {
         //board.startingPosition();
         //board.printBoard();
 
-        board.readInFEN("rnbqkbnr/pppppppp/8/8/7q/8/PPPPP1PP/RNBQKBNR w KQkq - 0 1");
+        board.readInFEN("rnbqkbnr/pppppppp/8/8/4q3/7R/PPPP1PPP/RNBQKBNR w KQkq - 0 1");
         board.printBoard();
         board.updateFEN();
         System.out.println(board.getFEN());
-        Move[] move = board.generatePawnMoves(1);
+        Move[] move = board.generateKnightMoves(1);
         for (Move moves : move) {
-            System.out.println(moves.getStartSquare() + " " + moves.getDestinationSquare() + "\n");
+            System.out.println(moves.getStartSquare() + " " + moves.getDestinationSquare() );
 
         }
+        System.out.println();
 
 
         for (Move moves: move) {
