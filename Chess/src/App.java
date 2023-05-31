@@ -10,10 +10,31 @@ public class App {
         //board.startingPosition();
         //board.printBoard();
 
-        board.readInFEN("rnbqkbnr/p1pppppp/P7/PpP5/8/8/PPPPPPPP/RNBQKBNR w KQkq b3 0 1");
+        board.readInFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         board.printBoard();
         board.updateFEN();
         System.out.println(board.getFEN());
+        Move[] move = board.generatePawnMoves(1);
+        for (Move moves : move) {
+            System.out.println(moves.getStartSquare() + " " + moves.getDestinationSquare());
+        }
+
+
+        for (Move moves: move) {
+            try {
+                System.out.println(moves.getStartSquare() + " " + moves.getDestinationSquare());
+                board.makeMove(moves);
+                board.updateFEN();
+                board.printBoard();
+                board.unMakeMove(moves);
+                //System.out.println(tempMove.getDestinationPiece());
+                board.updateFEN();
+                board.printBoard();
+            } catch (NullPointerException e){
+                System.out.println("NoMoves");
+            }
+        }
+
 
         /*
         int[] testing = {8,24};
@@ -29,7 +50,7 @@ public class App {
         board.printBoard();
         board.updateFEN();
         System.out.println(board.getFEN()); */
-        int[][] moves = {{}};
+        //int[][] moves = {{}};
         //int[] move = {};
 
         /*
@@ -68,15 +89,17 @@ public class App {
         // */
 
 
+        /*
         for(int i=0; i<64; i++) {
             System.out.println("\n");
             System.out.println(i);
             System.out.println(new Game().squareNumbertoNotation(i));
             System.out.println(board.isAttacked(1, i));
             System.out.println(board.isAttacked(-1, i));
-        }
+        }*/
 
         //board.startingPosition();
+
         //board.printBoard();
         
     }
