@@ -16,9 +16,9 @@ public class Move {
     private final boolean blackKingCastle;
     private final boolean blackQueenCastle;
 
-    private final boolean isEnPassant;
+    private final int colourToPlay;
 
-    public Move(int start, int destination, int dPiece, int ePSquare,int pPiece, int hm, int fm, boolean wkc, boolean wqc, boolean bkc, boolean bqc, boolean EnPassant) {
+    public Move(int start, int destination, int dPiece, int ePSquare,int pPiece, int hm, int fm, boolean wkc, boolean wqc, boolean bkc, boolean bqc, int turn) {
         startSquare = start;
         destinationSquare = destination;
         destinationPiece = dPiece;
@@ -30,7 +30,7 @@ public class Move {
         whiteQueenCastle = wqc;
         blackKingCastle = bkc;
         blackQueenCastle = bqc;
-        isEnPassant = EnPassant;
+        colourToPlay = turn;
     }
 
     public int getStartSquare() {
@@ -69,7 +69,7 @@ public class Move {
     public boolean isBlackQueenCastle() {
         return blackQueenCastle;
     }
-    public boolean isEnPassant() {
-        return isEnPassant;
+    public int getColourToPlay() {
+        return colourToPlay;
     }
 }
