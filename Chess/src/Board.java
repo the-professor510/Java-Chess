@@ -204,7 +204,7 @@ public class Board {
 
         if( c != '-' && pawnMove.length()>=2){
 
-            int row = pawnMove.charAt(1) - '0';
+            int row = pawnMove.charAt(1)- '0';
             int column = -1;
             switch (c) {
                 case 'a' -> column = 0;
@@ -219,9 +219,22 @@ public class Board {
                     enPassant = NOENPASSANT;
                     System.out.println(pawnMove);
                 }
+            }switch (row) {
+                case 1 -> row = 7;
+                case 2 -> row = 6;
+                case 3 -> row = 5;
+                case 4 -> row = 4;
+                case 5 -> row = 3;
+                case 6 -> row = 2;
+                case 7 -> row = 1;
+                case 8 -> row = 0;
+                default -> {
+                    enPassant = NOENPASSANT;
+                    System.out.println(pawnMove);
+                }
             }
 
-            enPassant = row*WIDTH + column - WIDTH;
+            enPassant = row*WIDTH + column;
         } else {
             enPassant = NOENPASSANT;
         }
@@ -398,7 +411,7 @@ public class Board {
             dSquare = i - (input * WIDTH);
 
             if (board[dSquare] == EMPTY) {
-                if (legalMove(input, i, dSquare, PAWN, EMPTY)) {
+                if (legalMove(input, i, dSquare, input*PAWN, EMPTY)) {
 
 
                     //able to make a move in front
@@ -433,7 +446,7 @@ public class Board {
                     if (i >= (28 + (input * 20))) {
                         dSquare = i - (input * WIDTH * 2);
                         if (board[dSquare] == EMPTY) {
-                            if (legalMove(input, i, dSquare, PAWN, EMPTY)) {
+                            if (legalMove(input, i, dSquare, input*PAWN, EMPTY)) {
                                 //able to make a double move
                                 moves.add(new Move(i, dSquare, EMPTY, enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                             }
@@ -783,12 +796,12 @@ public class Board {
             while (dSquare > 0) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, ROOK, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*ROOK, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare -= WIDTH;
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, ROOK, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*ROOK, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -802,12 +815,12 @@ public class Board {
             while (dSquare%WIDTH < WIDTH-1) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, ROOK, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*ROOK, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare -= 1;
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, ROOK, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*ROOK, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -821,12 +834,12 @@ public class Board {
             while (dSquare%WIDTH>0) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, ROOK, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*ROOK, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare += 1;
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, ROOK, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*ROOK, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -840,12 +853,12 @@ public class Board {
             while (dSquare < 64) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, ROOK, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*ROOK, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare += WIDTH;
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, ROOK, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*ROOK, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -867,14 +880,14 @@ public class Board {
 
     private boolean legalMove(int colour, int sSquare, int dSquare, int piece, int pieceTaken) {
         updateSquare(sSquare, EMPTY);
-        updateSquare(dSquare, colour*piece);
+        updateSquare(dSquare, piece);
         if(isInCheck(colour)) {
-            updateSquare(sSquare, colour*piece);
-            updateSquare(dSquare, -colour*pieceTaken);
+            updateSquare(sSquare, piece);
+            updateSquare(dSquare, pieceTaken);
             return false;
         }
-        updateSquare(sSquare, colour*piece);
-        updateSquare(dSquare, -colour*pieceTaken);
+        updateSquare(sSquare, piece);
+        updateSquare(dSquare, pieceTaken);
         return true;
     }
 
@@ -898,12 +911,12 @@ public class Board {
             while (dSquare> 0 && dSquare%WIDTH < WIDTH-1) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, BISHOP, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*BISHOP, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare -= (1+WIDTH);
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, BISHOP, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*BISHOP, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -917,12 +930,12 @@ public class Board {
             while (dSquare%WIDTH>0) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, BISHOP, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*BISHOP, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare -= (WIDTH-1);
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, BISHOP, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*BISHOP, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -936,12 +949,12 @@ public class Board {
             while (dSquare < 64 && dSquare%WIDTH>0) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, BISHOP, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*BISHOP, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare += (WIDTH +1);
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, BISHOP, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*BISHOP, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -955,12 +968,12 @@ public class Board {
             while (dSquare < 64 && dSquare%WIDTH < WIDTH-1) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, BISHOP, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*BISHOP, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare += (WIDTH-1);
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, BISHOP, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*BISHOP, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -1000,12 +1013,12 @@ public class Board {
             while (dSquare > 0) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare -= WIDTH;
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -1019,12 +1032,12 @@ public class Board {
             while (dSquare%WIDTH < WIDTH-1) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare -= 1;
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -1038,12 +1051,12 @@ public class Board {
             while (dSquare%WIDTH>0 ) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare += 1;
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -1057,12 +1070,12 @@ public class Board {
             while (dSquare < 64) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare += WIDTH;
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -1077,12 +1090,12 @@ public class Board {
             while (dSquare>0 && dSquare%WIDTH < WIDTH-1) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare -= (1+WIDTH);
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -1096,12 +1109,12 @@ public class Board {
             while ((dSquare%WIDTH) > 0) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare -= (WIDTH-1);
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -1115,12 +1128,12 @@ public class Board {
             while (dSquare < 64 && (dSquare%WIDTH) >0) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare += (WIDTH +1);
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -1134,12 +1147,12 @@ public class Board {
             while (dSquare < 64 && dSquare%WIDTH < WIDTH-1) {
                 //check to see if the destination square is able to be moved to
                 if(board[dSquare] == EMPTY){
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     dSquare += (WIDTH-1);
                 } else if (board[dSquare]*input < EMPTY) {
-                    if (legalMove(input, i, dSquare, QUEEN, board[dSquare])) {
+                    if (legalMove(input, i, dSquare, input*QUEEN, board[dSquare])) {
                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                     }
                     break;
@@ -1183,7 +1196,7 @@ public class Board {
                             if(dSquare>0 && dSquare<64) {
                                 if(input*board[dSquare] <= EMPTY) {
                                     // we can take in this direction
-                                    if (legalMove(input, i, dSquare, KNIGHT, board[dSquare])) {
+                                    if (legalMove(input, i, dSquare, input*KNIGHT, board[dSquare])) {
                                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                                     }
                                 }
@@ -1196,7 +1209,7 @@ public class Board {
                             if(dSquare>0 && dSquare<64) {
                                 if(input*board[dSquare] <= EMPTY) {
                                     // we can take in this direction
-                                    if (legalMove(input, i, dSquare, KNIGHT, board[dSquare])) {
+                                    if (legalMove(input, i, dSquare, input*KNIGHT, board[dSquare])) {
                                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                                     }
                                 }
@@ -1206,7 +1219,7 @@ public class Board {
                         if(dSquare>0 && dSquare<64) {
                             if(input*board[dSquare] <= EMPTY) {
                                 // we can take in this direction
-                                if (legalMove(input, i, dSquare, KNIGHT, board[dSquare])) {
+                                if (legalMove(input, i, dSquare, input*KNIGHT, board[dSquare])) {
                                     moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                                 }
                             }
@@ -1228,7 +1241,7 @@ public class Board {
                             if(dSquare>0 && dSquare<64) {
                                 if(input*board[dSquare] <= EMPTY) {
                                     // we can take in this direction
-                                    if (legalMove(input, i, dSquare, KNIGHT, board[dSquare])) {
+                                    if (legalMove(input, i, dSquare, input*KNIGHT, board[dSquare])) {
                                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                                     }
                                 }
@@ -1243,7 +1256,7 @@ public class Board {
                             if(dSquare>0 && dSquare<64) {
                                 if(input*board[dSquare] <= EMPTY) {
                                     // we can take in this direction
-                                    if (legalMove(input, i, dSquare, KNIGHT, board[dSquare])) {
+                                    if (legalMove(input, i, dSquare, input*KNIGHT, board[dSquare])) {
                                         moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                                     }
                                 }
@@ -1253,7 +1266,7 @@ public class Board {
                         if(dSquare>0 && dSquare<64) {
                             if(input*board[dSquare] <= EMPTY) {
                                 // we can take in this direction
-                                if (legalMove(input, i, dSquare, KNIGHT, board[dSquare])) {
+                                if (legalMove(input, i, dSquare, input*KNIGHT, board[dSquare])) {
                                     moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                                 }
                             }
@@ -1288,8 +1301,8 @@ public class Board {
             int row = (sSquare - sSquare%WIDTH)/WIDTH;
             if( row == ((enPassant - enPassant%WIDTH)/WIDTH+ input)) {
                 if (board[sSquare] == input*PAWN) {
-                    if (legalMove(input, sSquare, enPassant, PAWN, EMPTY)) {
-                        if (legalMove(input, enPassant - input * WIDTH, enPassant, -input * PAWN, EMPTY)) {
+                    if (legalMove(input, sSquare, enPassant, input*PAWN, EMPTY)) {
+                        if (legalMove(input, enPassant + input * WIDTH, enPassant, -input * PAWN, EMPTY)) {
                             moves.add(new Move(sSquare, enPassant, -input * PAWN, enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                         }
                     }
@@ -1300,8 +1313,8 @@ public class Board {
             row = (sSquare - sSquare%WIDTH)/WIDTH;
             if( row == ((enPassant - enPassant%WIDTH)/WIDTH+ input)) {
                 if (board[sSquare] == input*PAWN) {
-                    if (legalMove(input, sSquare, enPassant, PAWN, EMPTY)) {
-                        if (legalMove(input, enPassant - input * WIDTH, enPassant, -input * PAWN, EMPTY)) {
+                    if (legalMove(input, sSquare, enPassant, input*PAWN, EMPTY)) {
+                        if (legalMove(input, enPassant + input * WIDTH, enPassant, -input * PAWN, EMPTY)) {
                             moves.add(new Move(sSquare, enPassant, -input * PAWN, enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                         }
                     }
@@ -1409,9 +1422,9 @@ public class Board {
         Move[] qMoves = this.generateQueenMoves(input);
         Move[] kMoves = this.generateKingMoves(input);
         Move[] ePMoves = this.generateEnPassant(input);
-        Move[] castlingMoves = this.generateCastling(input);
+        //Move[] castlingMoves = this.generateCastling(input);
 
-        int length = pMoves.length + rMoves.length + nMoves.length + bMoves.length + qMoves.length + kMoves.length + ePMoves.length + castlingMoves.length;
+        int length = pMoves.length + rMoves.length + nMoves.length + bMoves.length + qMoves.length + kMoves.length + ePMoves.length;// + castlingMoves.length;
 
         allMoves = new Move[length];
 
@@ -1421,16 +1434,16 @@ public class Board {
         counter += rMoves.length;
         System.arraycopy(nMoves, 0, allMoves, counter, nMoves.length);
         counter += nMoves.length;
-        System.arraycopy(rMoves, 0, allMoves, counter, bMoves.length);
+        System.arraycopy(bMoves, 0, allMoves, counter, bMoves.length);
         counter += bMoves.length;
-        System.arraycopy(nMoves, 0, allMoves, counter, qMoves.length);
+        System.arraycopy(qMoves, 0, allMoves, counter, qMoves.length);
         counter += qMoves.length;
-        System.arraycopy(rMoves, 0, allMoves, counter, kMoves.length);
+        System.arraycopy(kMoves, 0, allMoves, counter, kMoves.length);
         counter += kMoves.length;
-        System.arraycopy(nMoves, 0, allMoves, counter, ePMoves.length);
+        System.arraycopy(ePMoves, 0, allMoves, counter, ePMoves.length);
         counter += ePMoves.length;
-        System.arraycopy(rMoves, 0, allMoves, counter, castlingMoves.length);
-        counter += castlingMoves.length;
+        //System.arraycopy(castlingMoves, 0, allMoves, counter, castlingMoves.length);
+        //counter += castlingMoves.length;
 
         return allMoves;
 
@@ -1861,6 +1874,8 @@ public class Board {
             if (inputs.getPromotionPiece() != EMPTY) {
                 //make a pawn promotion
                 pieceToMove = inputs.getPromotionPiece();
+
+            //check if it is an enPassant Move
             } else if (destination == enPassant) {
                 //make an en Passant Move
                 updateSquare(start, EMPTY);
@@ -1868,11 +1883,12 @@ public class Board {
                 updateSquare(destination+colour*WIDTH, EMPTY);
                 enPassant = EMPTY;
             } else {
+                //Make normal pawn move
                 updateSquare(start, EMPTY);
-                updateSquare(destination, pieceAtDestination);
+                updateSquare(destination, pieceToMove);
             }
-            updateSquare(start, EMPTY);
-            updateSquare(destination, pieceToMove);
+            //updateSquare(start, EMPTY);
+            //updateSquare(destination, pieceToMove);
 
             if(start-destination == 2*WIDTH*colour){
                 enPassant = start - WIDTH*colour;
@@ -1880,11 +1896,14 @@ public class Board {
                 enPassant = EMPTY;
             }
         //} else if(/*some condition for castling*/){
-
+        // enPassant = EMPTY;
         } else {
             // do a normal makeMove
             updateSquare(start, EMPTY);
-            updateSquare(destination, pieceAtDestination);
+            updateSquare(destination, pieceToMove);
+            enPassant = EMPTY;
+
+            //add some checks for rook and king moves
         }
     }
     /*
@@ -1894,41 +1913,45 @@ public class Board {
         int start = inputs.getStartSquare();
         int destination = inputs.getDestinationSquare();
 
-        int pieceToMove = board[start];
+        int pieceToMove = board[destination];
         int pieceAtDestination = inputs.getDestinationPiece();
 
         int colour = inputs.getColourToPlay();
 
-        if (pieceToMove == colour*PAWN) {
-            //check if it is a promotion
-            if (inputs.getPromotionPiece() != EMPTY) {
-                //make a pawn promotion
-                pieceToMove = inputs.getPromotionPiece();
-                updateSquare(start, pieceToMove);
-                updateSquare(destination, pieceAtDestination);
-            } else if (destination == inputs.getEnPassantSquare()) {
-                //unmake an en Passant Move
-                updateSquare(start, pieceToMove);
-                updateSquare(destination, EMPTY);
-                updateSquare(destination+colour*WIDTH, -colour*PAWN);
-                enPassant = inputs.getEnPassantSquare();
-            } else {
-                updateSquare(start, EMPTY);
-                updateSquare(destination, pieceAtDestination);
-            }
-
-            if(start-destination == 2*WIDTH*colour){
-                enPassant = start - WIDTH*colour;
-            } else {
-                enPassant = EMPTY;
-            }
-            //} else if(/*some condition for castling*/){
-
-        } else {
-            // do a normal makeMove
-            updateSquare(start, EMPTY);
+        if (inputs.getPromotionPiece() != EMPTY) {
+            //unmake a pawn promotion
+            pieceToMove = inputs.getPromotionPiece();
+            updateSquare(start, colour*PAWN);
             updateSquare(destination, pieceAtDestination);
         }
+
+        else if (pieceToMove == colour*PAWN) {
+            if (destination == inputs.getEnPassantSquare()) {
+                //unmake an en Passant Move
+                updateSquare(start, colour * PAWN);
+                updateSquare(destination, EMPTY);
+                updateSquare(destination + colour * WIDTH, -colour * PAWN);
+                enPassant = inputs.getEnPassantSquare();
+            } else {
+                // undo a normal makeMove
+                updateSquare(start, pieceToMove);
+                updateSquare(destination, pieceAtDestination);
+            }
+        //} else if(/*some condition for castling*/){
+
+        } else {
+            // undo a normal makeMove
+            //System.out.println("runs");
+            updateSquare(start, pieceToMove);
+            updateSquare(destination, pieceAtDestination);
+        }
+
+        enPassant = inputs.getEnPassantSquare();
+
+        castling[0] = inputs.isWhiteKingCastle();
+        castling[1] = inputs.isWhiteQueenCastle();
+        castling[2] = inputs.isBlackKingCastle();
+        castling[3] = inputs.isBlackQueenCastle();
     }
 
     private void updateSquare(int square, int newPiece){
