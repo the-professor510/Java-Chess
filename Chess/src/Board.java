@@ -1,12 +1,10 @@
-import com.sun.source.tree.EmptyStatementTree;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
 
 public class Board {
-    public final int HEIGTH = 8;
+    public final int HIEGHT = 8;
     public final int WIDTH = 8;
 
     private final int WHITE = 1;
@@ -17,7 +15,7 @@ public class Board {
     *
     * 0) Empty
     * 1) Pawn
-    * 2) Kinght
+    * 2) Knight
     * 3) Bishop
     * 4) Rook
     * 5) Queen
@@ -35,26 +33,16 @@ public class Board {
     private final int CASTLE = 7;
 
     private String FEN;
-    private final String STARTINGFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-    private int[] lastMove; //[start sqaure, destination square, piece moved, last piece moved]
-    private boolean whitesTurn; // true, white 
-    private boolean[] castling = new boolean[4]; //[W Queenside, W Kingside, B Queenside, B Kingside]
+    public boolean whitesTurn; // true, white
+    private final boolean[] castling = new boolean[4]; //[W Queenside, W Kingside, B Queenside, B Kingside]
     private int enPassant; // square that a pawn may do en Passant on, -1 if no piece can move their
     private int halfMove; // last move since pawn advance or piece capture
     private int fullMove; // increases everytime black plays a move
 
     private final int NOENPASSANT = -1;
 
-    private final int[] board = new int[HEIGTH*WIDTH];
-
-    public final int ENPASSANTMOVE = 64;
-    public final int WHITEQUEENSIDECASTLE = 65;
-    public final int WHITEKINGSIDECASTLE = 66;
-    public final int BLACKQUEENSIDECASTLE = 67;
-    public final int BLACKINGSIDECASTLE = 68;
-    
-    
+    private final int[] board = new int[HIEGHT *WIDTH];
 
     public Board(){
         for(int i =0; i<64; i++) {
@@ -63,6 +51,7 @@ public class Board {
     }
 
     public void startingPosition(){
+        String STARTINGFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         readInFEN(STARTINGFEN);
     }
 
@@ -85,7 +74,7 @@ public class Board {
         String rank;
 
         int counter = 0;
-        int numberPlaced = 0;
+        int numberPlaced;
         while(text.hasNext()){
 
             rank = text.next();
@@ -178,22 +167,22 @@ public class Board {
 
         // castling availability
         String castlingString = scannerFEN.next();
+        castling[0] = false;
+        castling[1] = false;
+        castling[2] = false;
+        castling[3] = false;
         for(int i=0; i< castlingString.length(); i++){
             char c = castlingString.charAt(i);
 
-            //[W Queenside, W Kingside, B Queenside, B Kingside]
-            if( c == 'Q') {
+            //[W Kingside, W Queenside, B Kingside, B Queenside]
+            if( c == 'K') {
                 castling[0] = true;
-            } else if (c == 'K') {
+            } else if (c == 'Q') {
                 castling[1] = true;
-            } else if (c == 'q') {
-                castling[2] = true;
             } else if (c == 'k') {
+                castling[2] = true;
+            } else if (c == 'q') {
                 castling[3] = true;
-            } else {
-                for( int j = 0; j<castling.length; j++) {
-                    castling[i] = false;
-                }                
             }
         }
 
@@ -224,7 +213,8 @@ public class Board {
                 case 1 -> row = 7;
                 case 2 -> row = 6;
                 case 3 -> row = 5;
-                case 4 -> row = 4;
+                case 4 -> {
+                }
                 case 5 -> row = 3;
                 case 6 -> row = 2;
                 case 7 -> row = 1;
@@ -265,12 +255,12 @@ public class Board {
 
         StringBuilder generatedFEN = new StringBuilder();
 
-        int numBlank = 0;
+        int numBlank;
 
-        for(int i = 0; i<HEIGTH;i++){
+        for(int i = 0; i< HIEGHT; i++){
             numBlank = 0;
             for(int j=0; j<WIDTH; j++){
-                int tempSquare = board[i*HEIGTH+j];
+                int tempSquare = board[i* HIEGHT +j];
 
                 if(tempSquare != EMPTY){
                     if(numBlank != 0){
@@ -338,7 +328,7 @@ public class Board {
         if (enPassant != NOENPASSANT) {
             //convert the integer into chess notation
             int column = enPassant%WIDTH;
-            int row = (enPassant - column)/HEIGTH;
+            int row = (enPassant - column)/ HIEGHT;
 
             switch (column) {
                 case 0 -> generatedFEN.append(" a");
@@ -383,7 +373,7 @@ public class Board {
         int[] location = new int[64];
         int counter = 0;
 
-        for(int i=0; i<HEIGTH*WIDTH; i++){
+        for(int i = 0; i< HIEGHT *WIDTH; i++){
             if(board[i] == piece) {
                 location[counter] = i;
                 counter +=1;
@@ -400,7 +390,7 @@ public class Board {
     public Move[] generatePawnMoves(int input) {
         //want to find all the pawns for the correct colour
         int dSquare;
-        ArrayList<Move> moves = new ArrayList<Move>();
+        ArrayList<Move> moves = new ArrayList<>();
         int[] positions = findPiece(input*PAWN);
         for(int i: positions){
             //check if 1 in front is possible, if this then check if two infront is possible
@@ -606,13 +596,13 @@ public class Board {
 
     /*
      * inputs: [player(white = 1, black = -1)]
-     * outputs: [[start square, destination square]]
+     * outputs: [Move[[startSquare, destinationSquare, pieceAtDestination, enPassantSquare, promotionPiece, halfMove, fullMove, castling[0], castling[1], castling[2], castling[3
      */
     public Move[] generateKingMoves(int input) {
 
         //want to find all the kings for the correct colour
         int dSquare;
-        ArrayList<Move> moves = new ArrayList<Move>();
+        ArrayList<Move> moves = new ArrayList<>();
 
         int[] positions = findPiece(input*KING);
 
@@ -784,7 +774,7 @@ public class Board {
 
         //want to find all of the rooks for the correct colour
         int dSquare;
-        ArrayList<Move> moves = new ArrayList<Move>();
+        ArrayList<Move> moves = new ArrayList<>();
 
         int[] positions = findPiece(input*ROOK);
 
@@ -900,7 +890,7 @@ public class Board {
 
         //want to find all of the rooks for the correct colour
         int dSquare;
-        ArrayList<Move> moves = new ArrayList<Move>();
+        ArrayList<Move> moves = new ArrayList<>();
 
         int[] positions = findPiece(input*BISHOP);
 
@@ -1002,7 +992,7 @@ public class Board {
 
         //want to find all of the rooks for the correct colour
         int dSquare;
-        ArrayList<Move> moves = new ArrayList<Move>();
+        ArrayList<Move> moves = new ArrayList<>();
 
         int[] positions = findPiece(input*QUEEN);
 
@@ -1181,7 +1171,7 @@ public class Board {
 
         //want to find all of the rooks for the correct colour
         int dSquare;
-        ArrayList<Move> moves = new ArrayList<Move>();
+        ArrayList<Move> moves = new ArrayList<>();
 
         int[] positions = findPiece(input*KNIGHT);
 
@@ -1191,9 +1181,7 @@ public class Board {
                     dSquare = i + WIDTH*y + x;
                     //need to limit so that I only find if the dSquare is free when we haven't crossed over the board
                     if(dSquare%WIDTH > i%WIDTH ) {
-                        if ( i%WIDTH == 0 && dSquare%WIDTH == (WIDTH-1)) {
-                            continue;
-                        } else {
+                        if (!( i%WIDTH == 0 && dSquare%WIDTH == (WIDTH-1))) {
                             if(dSquare>0 && dSquare<64) {
                                 if(input*board[dSquare] <= EMPTY) {
                                     // we can take in this direction
@@ -1204,9 +1192,7 @@ public class Board {
                             }
                         }
                     } else if (dSquare%WIDTH < i%WIDTH ) {
-                        if ( i%WIDTH == (WIDTH-1) && dSquare%WIDTH == 0) {
-                            continue;
-                        } else {
+                        if (!(i%WIDTH == (WIDTH-1) && dSquare%WIDTH == 0)) {
                             if(dSquare>0 && dSquare<64) {
                                 if(input*board[dSquare] <= EMPTY) {
                                     // we can take in this direction
@@ -1291,7 +1277,7 @@ public class Board {
 
     public Move[] generateEnPassant(int input) {
 
-        ArrayList<Move> moves = new ArrayList<Move>();
+        ArrayList<Move> moves = new ArrayList<>();
 
         //check if we have a en passant move available
         if(enPassant == NOENPASSANT) {
@@ -1334,7 +1320,7 @@ public class Board {
     }
 
     public Move[] generateCastling(int input) {
-        ArrayList<Move> moves = new ArrayList<Move>();
+        ArrayList<Move> moves = new ArrayList<>();
 
         boolean canCastle;
 
@@ -1352,18 +1338,17 @@ public class Board {
             System.out.println("King has been Taken");
             return new Move[]{};
         }
+
         if(input == WHITE) {
             if (castling[0]) {
                 //check if between the king and kingside rook is clear
                 // To the left
-
                 // check if between the king and right rook is empty
 
                 canCastle = true;
                 //System.out.println(startSquare);
                 for (int i = startSquare + 1; i<=(startSquare+2); i++) {
-                    //System.out.println(i);
-                    if (board[i] != EMPTY || isAttacked(input, board[i])) {
+                    if (board[i] != EMPTY || isAttacked(input, i)) {
                         canCastle = false;
                         break;
                     }
@@ -1377,7 +1362,7 @@ public class Board {
                 // check if between the king and queenside rook is clear
                 canCastle = true;
                 for (int i = startSquare - 1; i>=(startSquare-2); i--) {
-                    if (board[i] != EMPTY || isAttacked(input, board[i])) {
+                    if (board[i] != EMPTY || isAttacked(input, i)) {
                         canCastle = false;
                         break;
                     }
@@ -1396,7 +1381,7 @@ public class Board {
 
                 canCastle = true;
                 for (int i = startSquare+1; i<=(startSquare+2); i++){
-                    if(board[i] != EMPTY || isAttacked(input,board[i])){
+                    if(board[i] != EMPTY || isAttacked(input,i)){
                         canCastle = false;
                         break;
                     }
@@ -1409,7 +1394,7 @@ public class Board {
                 // check if between the king and queenside rook is clear
                 canCastle = true;
                 for (int i = startSquare-1; i>=(startSquare-2); i--){
-                    if(board[i] != EMPTY || isAttacked(input,board[i])){
+                    if(board[i] != EMPTY || isAttacked(input,i)){
                         canCastle = false;
                         break;
                     }
@@ -1460,7 +1445,6 @@ public class Board {
         System.arraycopy(ePMoves, 0, allMoves, counter, ePMoves.length);
         counter += ePMoves.length;
         System.arraycopy(castlingMoves, 0, allMoves, counter, castlingMoves.length);
-        counter += castlingMoves.length;
 
         return allMoves;
 
@@ -1468,14 +1452,14 @@ public class Board {
 
     /*
      * checks if this square would put the king in check, i.e. if this square is under attack from the other player
-     * inputs: int colour - the colour of the king which we want to check if it would be in check
+     * inputs: int colour - the colour of the piece which we want to check if it would be under attack
      *         int square - the square of the piece which we want to check if it would be in check
      * outputs: boolean - if the king would be in check in this position
      */
     public boolean isAttacked (int colour, int square) {
         //check around this square if it is attacked by any pieces
 
-        int dSquare = 0;
+        int dSquare;
         
         //can we be taken by a knight
         for (int x = -1; x<=1; x+=2) {
@@ -1671,7 +1655,7 @@ public class Board {
                 dSquare = square - (colour*(WIDTH+1));
             }
             if (dSquare > 0 && dSquare < 64) {
-                if (-colour * board[dSquare] == PAWN) {
+                if (board[dSquare] == -colour *PAWN) {
                     // we can take in this direction
                     return true;
                 }
@@ -1686,7 +1670,7 @@ public class Board {
                 dSquare = square - (colour * (WIDTH + 1));
             }
             if (dSquare > 0 && dSquare < 64) {
-                if (-colour * board[dSquare] == PAWN) {
+                if (board[dSquare] == -colour *PAWN) {
                     // we can take in this direction
                     return true;
                 }
@@ -1695,7 +1679,7 @@ public class Board {
             //check to the right
             dSquare = square - (colour*(WIDTH-1));
             if (dSquare > 0 && dSquare < 64) {
-                if (-colour * board[dSquare] == PAWN) {
+                if (board[dSquare] == -colour *PAWN) {
                     // we can take in this direction
                     return true;
                 }
@@ -1704,7 +1688,7 @@ public class Board {
             //check to the left
             dSquare = square - (colour*(WIDTH +1));
             if (dSquare > 0 && dSquare < 64) {
-                if (-colour * board[dSquare] == PAWN) {
+                if (board[dSquare] == -colour *PAWN) {
                     // we can take on this square
                     return true;
                 }
@@ -1722,7 +1706,7 @@ public class Board {
 
                         dSquare = square + WIDTH*y + x;
 
-                        if(-colour*board[dSquare] == KING) {
+                        if(board[dSquare] == -colour *KING) {
                             // we can take in this direction
                             return true;
                         }
@@ -1735,7 +1719,7 @@ public class Board {
 
                         dSquare = square + WIDTH*y + x;
 
-                        if(-colour*board[dSquare] == KING) {
+                        if(board[dSquare] == -colour * KING) {
                             // we can take in this direction
                             return true;
                         }
@@ -1748,7 +1732,7 @@ public class Board {
 
                         dSquare = square + WIDTH*y + x;
 
-                        if(-colour*board[dSquare] == KING) {
+                        if(board[dSquare] == -colour*KING) {
                             // we can take in this direction
                             return true;
                         }
@@ -1764,7 +1748,7 @@ public class Board {
 
                         dSquare = square + WIDTH*y + x;
 
-                        if(-colour*board[dSquare] == KING) {
+                        if(board[dSquare] == -colour*KING) {
                             // we can take in this direction
                             return true;
                         }
@@ -1777,7 +1761,7 @@ public class Board {
 
                         dSquare = square + WIDTH*y + x;
 
-                        if(-colour*board[dSquare] == KING) {
+                        if(board[dSquare] == -colour*KING) {
                             // we can take in this direction
                             return true;
                         }
@@ -1790,7 +1774,7 @@ public class Board {
 
                         dSquare = square + WIDTH*y + x;
 
-                        if(-colour*board[dSquare] == KING) {
+                        if(board[dSquare] == -colour*KING) {
                             // we can take in this direction
                             return true;
                         }
@@ -1805,7 +1789,7 @@ public class Board {
 
                         dSquare = square + WIDTH*y + x;
 
-                        if(-colour*board[dSquare] == KING) {
+                        if(board[dSquare] == -colour*KING) {
                             // we can take in this direction
                             return true;
                         }
@@ -1818,7 +1802,7 @@ public class Board {
 
                         dSquare = square + WIDTH*y + x;
 
-                        if(-colour*board[dSquare] == KING) {
+                        if(board[dSquare] == -colour* KING) {
                             // we can take in this direction
                             return true;
                         }
@@ -1831,7 +1815,7 @@ public class Board {
 
                         dSquare = square + WIDTH*y + x;
 
-                        if(-colour*board[dSquare] == KING) {
+                        if(board[dSquare] == -colour *KING) {
                             // we can take in this direction
                             return true;
                         }
@@ -1856,22 +1840,6 @@ public class Board {
         return false;
     }
 
-    public void updateLastMove(int[] move) {
-        lastMove = move;
-    }
-
-    public int[] getLastMove() {
-        return lastMove;
-    }
-
-    public void updateEnPassant(int square) {
-        enPassant = square;
-    }
-
-    public int getEnPassant() {
-        return enPassant;
-    }
-
     ///*
     // * inputs int[2]: [start square, destination square]
     // * outputs int[4]: [start square, destination square, piece moved, piece at destination square]
@@ -1891,7 +1859,8 @@ public class Board {
             if (inputs.getPromotionPiece() != EMPTY) {
                 //make a pawn promotion
                 pieceToMove = inputs.getPromotionPiece();
-
+                updateSquare(start, EMPTY);
+                updateSquare(destination, pieceToMove);
                 //check if it is an enPassant Move
             } else if (destination == enPassant) {
                 //make an en Passant Move
@@ -1904,8 +1873,6 @@ public class Board {
                 updateSquare(start, EMPTY);
                 updateSquare(destination, pieceToMove);
             }
-            //updateSquare(start, EMPTY);
-            //updateSquare(destination, pieceToMove);
 
             if (start - destination == 2 * WIDTH * colour) {
                 enPassant = start - WIDTH * colour;
@@ -2005,7 +1972,7 @@ public class Board {
 
         if (inputs.getPromotionPiece() != EMPTY) {
             //unmake a pawn promotion
-            pieceToMove = inputs.getPromotionPiece();
+
             updateSquare(start, colour*PAWN);
             updateSquare(destination, pieceAtDestination);
         }
