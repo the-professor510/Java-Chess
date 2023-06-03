@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Game {
     private final Board board;
     private int turn; // +ve for white, -ve for black
@@ -12,7 +14,6 @@ public class Game {
     }
 
     public void testMoveGen(){
-
         board.readInFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         board.readInFEN("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10");
         board.printBoard();
@@ -24,38 +25,117 @@ public class Game {
             System.out.println(convertToNotation(moves));
             //System.out.println(moves.getPromotionPiece());
         }
+    }
+
+    public void resetBoard(){
+        board.readInFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    }
+
+    public void playAgainstRandMoveOpponent(int colour) {
+
+        if(colour == -1){
+            board.printBoard();
+            Move[] move = board.generateMoves(-colour);
+            int randomNum = (int) (Math.random() * move.length);
+            board.makeMove(move[randomNum]);
+            System.out.println(convertToNotation(move[randomNum]));
+            System.out.println("\n");
+        }
+
+        Move[] move = board.generateMoves(colour);
+        if(move.length == 0){
+            if(board.isInCheck(colour)){
+                System.out.print("Opponent Wins");
+            }else{
+                System.out.print("Stalemate");
+            }
+            return;
+        }
+
+        Scanner reader = new Scanner(System.in);
+        String s1 = null;
+
+        while(!(won)){
+            board.printBoard();
+            System.out.println(listMoves(move));
 
 
-        /*KJH
-        long epoch = System.currentTimeMillis();
+            int num =-1;
 
-        randMove(2,board,1);
+            try {
+                //try to execute the folowing lines
+                System.out.println("Enter an int between 0 and " + move.length+ " to select the move from the above list you would like to play");
+                System.out.print("Enter you int: ");
 
-        long epoch2 = System.currentTimeMillis();
-
-        System.out.println("\nNumber of Moves Found: "+ numberOfMoves);
-        System.out.println("\nTime to run: " + (epoch2-epoch) + "ms");
-
-
-         epoch = System.currentTimeMillis();
-
-        randMove(3,board,1);
-
-         epoch2 = System.currentTimeMillis();
-
-        System.out.println("\nNumber of Moves Found: "+ numberOfMoves);
-        System.out.println("\nTime to run: " + (epoch2-epoch) + "ms");
+                s1 = reader.nextLine();
+                num = Integer.parseInt(s1);
 
 
-         epoch = System.currentTimeMillis();
+                //If everything went fine, break the loop and move on.
+                //break;
 
-        randMove(4,board,1);
+            } catch (NumberFormatException e) {
 
-         epoch2 = System.currentTimeMillis();
+                //If the method Integer.parseInt throws the exception, catch and print the message.
+                System.out.println("Not a valid input, please try again.");
 
-        System.out.println("\nNumber of Moves Found: "+ numberOfMoves);
-        System.out.println("\nTime to run: " + (epoch2-epoch) + "ms");*/
+            }
 
+            //reader.close();
+
+            while(num<0 || num>move.length){
+                //reader = new Scanner(System.in);
+                s1 = null;
+
+                try {
+                    //try to execute the folowing lines
+                    System.out.print("Enter you int: ");
+
+                    s1 = reader.nextLine();
+                    num = Integer.parseInt(s1);
+
+
+
+                    //If everything went fine, break the loop and move on.
+                    //break;
+                } catch (NumberFormatException e) {
+                    //If the method Integer.parseInt throws the exception, catch and print the message.
+                    System.out.println("Not a valid input, please try again.");
+                }
+                //reader.close();
+            }
+
+            board.makeMove(move[num]);
+
+            move = board.generateMoves(-colour);
+            if(move.length == 0){
+                if(board.isInCheck(-colour)){
+                    System.out.print("Player Wins");
+                }else{
+                    System.out.print("Stalemate");
+                }
+                return;
+            }
+
+            board.printBoard();
+            move = board.generateMoves(-colour);
+            int randomNum = (int) (Math.random() * move.length);
+            board.makeMove(move[randomNum]);
+            System.out.println(convertToNotation(move[randomNum]));
+            System.out.println("\n");
+
+
+            move = board.generateMoves(colour);
+            if(move.length == 0){
+                if(board.isInCheck(colour)){
+                    System.out.print("Opponent Wins");
+                }else{
+                    System.out.print("Stalemate");
+                }
+                return;
+            }
+
+        }
     }
 
     public void randMove(int depth, Board board, int turn){
@@ -69,6 +149,15 @@ public class Game {
                 board.unMakeMove(singelMove);
             }
         }
+    }
+
+    public String listMoves(Move[] moves){
+        StringBuilder moveList = new StringBuilder();
+
+        for(Move move: moves){
+            moveList.append(convertToNotation(move)).append(" ");
+        }
+        return moveList.toString();
     }
 
 
