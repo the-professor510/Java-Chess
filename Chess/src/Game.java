@@ -151,6 +151,44 @@ public class Game {
         }
     }
 
+    public void listPerft(String FEN, int depth, int colour){
+        board.readInFEN(FEN);
+        //board.printBoard();
+
+        System.out.println("Total: " + perft(depth, board, colour, 0));
+
+        Move[] move = board.generateMoves(colour);
+        //System.out.println(move.length);
+        for (Move moves : move) {
+            board.makeMove(moves);
+            System.out.println(convertToNotation(moves) + ": " + perft(depth-1, board, -colour, 0));
+            board.unMakeMove(moves);
+            //System.out.println(moves.getPromotionPiece());
+        }
+
+    }
+
+    public int perft(int depth, Board board, int turn, int counter){
+        if (depth == 0) {
+            return (counter+1);
+        }
+
+        //System.out.println("runs");
+        //System.out.println(depth);
+        if(depth > 0){
+            //gen moves, play them and then call this method with plus 1 to depth and invert the turn
+            Move[] move = board.generateMoves(turn);
+            for(Move singelMove: move){
+                board.makeMove(singelMove);
+                //numberOfMoves +=1;
+                counter = perft(depth-1, board, -turn, counter);
+                //System.out.println(counter);
+                board.unMakeMove(singelMove);
+            }
+        }
+        return counter;
+    }
+
     public String listMoves(Move[] moves){
         StringBuilder moveList = new StringBuilder();
 
@@ -167,9 +205,9 @@ public class Game {
 
         notation += squareToNotation(move.getStartSquare());
 
-        if (move.getDestinationPiece() != board.EMPTY) {
+        /*if (move.getDestinationPiece() != board.EMPTY) {
             notation += "x";
-        }
+        }*/
 
         notation += squareToNotation(move.getDestinationSquare());
 

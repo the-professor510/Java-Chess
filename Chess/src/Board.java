@@ -447,7 +447,7 @@ public class Board {
             }
 
             updateSquare(i, EMPTY);
-            if(!isInCheck(input)) {
+            //if(!isInCheck(input)) {
 
                 //taking
                 if (i % WIDTH == 0) {
@@ -461,27 +461,29 @@ public class Board {
                     }
                     if (input * board[dSquare] < EMPTY) {
                         // we can take in this direction
-                        if (input == WHITE) {
-                            if (dSquare < WIDTH) {
-                                //consider promotion of the pawn
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                        if (legalMove(input, i, dSquare, input*PAWN, board[dSquare])) {
+                            if (input == WHITE) {
+                                if (dSquare < WIDTH) {
+                                    //consider promotion of the pawn
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                } else {
+                                    // there is no promotion piece
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
                             } else {
-                                // there is no promotion piece
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            }
-                        } else {
-                            if (dSquare >= WIDTH * (WIDTH - 1)) {
-                                //consider promotion of the pawn
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            } else {
-                                // there is no promotion piece
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                if (dSquare >= WIDTH * (WIDTH - 1)) {
+                                    //consider promotion of the pawn
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                } else {
+                                    // there is no promotion piece
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
                             }
                         }
                     }
@@ -496,27 +498,29 @@ public class Board {
                     }
                     if (input * board[dSquare] < EMPTY) {
                         // we can take in this direction
-                        if (input == WHITE) {
-                            if (dSquare < WIDTH) {
-                                //consider promotion of the pawn
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                        if (legalMove(input, i, dSquare, input*PAWN, board[dSquare])) {
+                            if (input == WHITE) {
+                                if (dSquare < WIDTH) {
+                                    //consider promotion of the pawn
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                } else {
+                                    // there is no promotion piece
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
                             } else {
-                                // there is no promotion piece
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            }
-                        } else {
-                            if (dSquare >= WIDTH * (WIDTH - 1)) {
-                                //consider promotion of the pawn
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            } else {
-                                // there is no promotion piece
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                if (dSquare >= WIDTH * (WIDTH - 1)) {
+                                    //consider promotion of the pawn
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                } else {
+                                    // there is no promotion piece
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
                             }
                         }
                     }
@@ -525,27 +529,29 @@ public class Board {
                     dSquare = i - (input * (WIDTH - 1));
                     if (input * board[dSquare] < EMPTY) {
                         // we can take in this direction
-                        if (input == WHITE) {
-                            if (dSquare < WIDTH) {
-                                //consider promotion of the pawn
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                        if (legalMove(input, i, dSquare, input*PAWN, board[dSquare])) {
+                            if (input == WHITE) {
+                                if (dSquare < WIDTH) {
+                                    //consider promotion of the pawn
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                } else {
+                                    // there is no promotion piece
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
                             } else {
-                                // there is no promotion piece
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            }
-                        } else {
-                            if (dSquare >= WIDTH * (WIDTH - 1)) {
-                                //consider promotion of the pawn
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            } else {
-                                // there is no promotion piece
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                if (dSquare >= WIDTH * (WIDTH - 1)) {
+                                    //consider promotion of the pawn
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                } else {
+                                    // there is no promotion piece
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
                             }
                         }
                     }
@@ -554,32 +560,34 @@ public class Board {
                     dSquare = i - (input * (WIDTH + 1));
                     if (input * board[dSquare] < EMPTY) {
                         // we can take on this square
-                        if (input == WHITE) {
-                            if (dSquare < WIDTH) {
-                                //consider promotion of the pawn
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                        if (legalMove(input, i, dSquare, input*PAWN, board[dSquare])) {
+                            if (input == WHITE) {
+                                if (dSquare < WIDTH) {
+                                    //consider promotion of the pawn
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                } else {
+                                    // there is no promotion piece
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
                             } else {
-                                // there is no promotion piece
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            }
-                        } else {
-                            if (dSquare >= WIDTH * (WIDTH - 1)) {
-                                //consider promotion of the pawn
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            } else {
-                                // there is no promotion piece
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                if (dSquare >= WIDTH * (WIDTH - 1)) {
+                                    //consider promotion of the pawn
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * ROOK, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * KNIGHT, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * BISHOP, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, input * QUEEN, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                } else {
+                                    // there is no promotion piece
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
                             }
                         }
                     }
                 }
-            }
+            //}
             updateSquare(i, input*PAWN);
 
         }
