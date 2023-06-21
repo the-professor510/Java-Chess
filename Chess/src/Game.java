@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public class Game {
-    private final Board board;
+    public final Board board;
     private int turn; // +ve for white, -ve for black
     private boolean won;
 
@@ -155,14 +155,22 @@ public class Game {
         board.readInFEN(FEN);
         //board.printBoard();
 
+        board.printBoard();
         System.out.println("Total: " + perft(depth, board, colour, 0));
+        //board.printBoard();
 
         Move[] move = board.generateMoves(colour);
         //System.out.println(move.length);
         for (Move moves : move) {
             board.makeMove(moves);
             System.out.println(convertToNotation(moves) + ": " + perft(depth-1, board, -colour, 0));
+            //board.printBoard();
+            //System.out.println(board.getFEN());
             board.unMakeMove(moves);
+            //System.out.println(moves.getStartSquare());
+            //System.out.println(moves.getDestinationPiece());
+            //board.printBoard();
+            //System.out.println(board.getFEN());
             //System.out.println(moves.getPromotionPiece());
         }
 
@@ -181,7 +189,10 @@ public class Game {
             for(Move singelMove: move){
                 board.makeMove(singelMove);
                 //numberOfMoves +=1;
+                //board.printBoard();
                 counter = perft(depth-1, board, -turn, counter);
+                //board.printBoard();
+
                 //System.out.println(counter);
                 board.unMakeMove(singelMove);
             }
@@ -205,11 +216,16 @@ public class Game {
 
         notation += squareToNotation(move.getStartSquare());
 
-        /*if (move.getDestinationPiece() != board.EMPTY) {
-            notation += "x";
-        }*/
 
         notation += squareToNotation(move.getDestinationSquare());
+
+        switch (move.getColourToPlay()*move.getPromotionPiece()) {
+            case 2 -> notation += "n";
+            case 3 -> notation += "b";
+            case 4 -> notation += "r";
+            case 5 -> notation += "q";
+            default -> notation += "";
+        }
 
         //if (move[4])
 

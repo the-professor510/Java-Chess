@@ -19,18 +19,18 @@ public class Move {
     private final int colourToPlay;
 
     public Move(int start, int destination, int dPiece, int ePSquare,int pPiece, int hm, int fm, boolean wkc, boolean wqc, boolean bkc, boolean bqc, int turn) {
-        startSquare = start;
-        destinationSquare = destination;
-        destinationPiece = dPiece;
-        enPassantSquare = ePSquare;
-        promotionPiece = pPiece;
-        halfMove = hm;
+        startSquare = start; // 4 bits
+        destinationSquare = destination; // 4 bits
+        destinationPiece = dPiece; // 3 bits
+        enPassantSquare = ePSquare; // 4 bits
+        promotionPiece = pPiece; // 2 bits
+        halfMove = hm; //4 bits
         fullMove = fm;
-        whiteKingCastle = wkc;
-        whiteQueenCastle = wqc;
-        blackKingCastle = bkc;
-        blackQueenCastle = bqc;
-        colourToPlay = turn;
+        whiteKingCastle = wkc; //1 bit
+        whiteQueenCastle = wqc; // 1 bit
+        blackKingCastle = bkc; // 1 bit
+        blackQueenCastle = bqc; // 1 bit
+        colourToPlay = turn; // 1 bit
     }
 
     public int getStartSquare() {
