@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 
 public class Board {
-    public final int HIEGHT = 8;
+    public final int HEIGHT = 8;
     public final int WIDTH = 8;
 
     private final int WHITE = 1;
@@ -42,7 +42,7 @@ public class Board {
 
     private final int NOENPASSANT = -1;
 
-    private final int[] board = new int[HIEGHT *WIDTH];
+    private final int[] board = new int[HEIGHT *WIDTH];
 
     public Board(){
         for(int i =0; i<64; i++) {
@@ -257,10 +257,10 @@ public class Board {
 
         int numBlank;
 
-        for(int i = 0; i< HIEGHT; i++){
+        for(int i = 0; i< HEIGHT; i++){
             numBlank = 0;
             for(int j=0; j<WIDTH; j++){
-                int tempSquare = board[i* HIEGHT +j];
+                int tempSquare = board[i* HEIGHT +j];
 
                 if(tempSquare != EMPTY){
                     if(numBlank != 0){
@@ -328,7 +328,7 @@ public class Board {
         if (enPassant != NOENPASSANT) {
             //convert the integer into chess notation
             int column = enPassant%WIDTH;
-            int row = (enPassant - column)/ HIEGHT;
+            int row = (enPassant - column)/ HEIGHT;
 
             switch (column) {
                 case 0 -> generatedFEN.append(" a");
@@ -373,7 +373,7 @@ public class Board {
         int[] location = new int[64];
         int counter = 0;
 
-        for(int i = 0; i< HIEGHT *WIDTH; i++){
+        for(int i = 0; i< HEIGHT *WIDTH; i++){
             if(board[i] == piece) {
                 location[counter] = i;
                 counter +=1;
@@ -1919,7 +1919,7 @@ public class Board {
                 updateSquare(start, EMPTY);
                 updateSquare(destination, pieceToMove);
                 updateSquare(destination + colour * WIDTH, EMPTY);
-                enPassant = EMPTY;
+                enPassant = NOENPASSANT;
             } else {
                 //Make normal pawn move
                 updateSquare(start, EMPTY);

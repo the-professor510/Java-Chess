@@ -13,17 +13,80 @@ public class Game {
         won = false;
     }
 
-    public void testMoveGen(){
-        board.readInFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        board.readInFEN("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10");
+    //Play a local 2 Player game between black and white
+    public void PlayGame() {
+
+        resetBoard();
+        Move[] moves = board.generateMoves(turn);
+        String moveList = "";
+
+        Scanner reader = new Scanner(System.in);
+        String s1 = null;
+
+        while (moves.length > 0) {
+            board.printBoard();
+            System.out.println(listMoves(moves));
+
+
+            int num = -1;
+
+            try {
+                //try to execute the folowing lines
+                System.out.println("Enter an int between 0 and " + moves.length + " to select the move from the above list you would like to play");
+                System.out.print("Enter you int: ");
+
+                s1 = reader.nextLine();
+                num = Integer.parseInt(s1);
+
+
+                //If everything went fine, break the loop and move on.
+                //break;
+
+            } catch (NumberFormatException e) {
+
+                //If the method Integer.parseInt throws the exception, catch and print the message.
+                System.out.println("Not a valid input, please try again.");
+
+            }
+
+            //reader.close();
+
+            while (num < 0 || num > moves.length) {
+                //reader = new Scanner(System.in);
+                s1 = null;
+
+                try {
+                    //try to execute the folowing lines
+                    System.out.print("Enter you int: ");
+
+                    s1 = reader.nextLine();
+                    num = Integer.parseInt(s1);
+
+
+                    //If everything went fine, break the loop and move on.
+                    //break;
+                } catch (NumberFormatException e) {
+                    //If the method Integer.parseInt throws the exception, catch and print the message.
+                    System.out.println("Not a valid input, please try again.");
+                }
+                //reader.close();
+            }
+
+            board.makeMove(moves[num]);
+
+            turn = -turn;
+
+            moves = board.generateMoves(turn);
+        }
+
         board.printBoard();
-        board.updateFEN();
-        System.out.println(board.getFEN());
-        Move[] move = board.generateMoves(-1);
-        System.out.println(move.length);
-        for (Move moves : move) {
-            System.out.println(convertToNotation(moves));
-            //System.out.println(moves.getPromotionPiece());
+
+        if (board.isInCheck(1)) {
+            System.out.print("Black Wins");
+        } else if(board.isInCheck(-1)){
+            System.out.print("White Wins");
+        } else{
+            System.out.print("Stalemate");
         }
     }
 
@@ -237,7 +300,7 @@ public class Game {
     public String squareToNotation(int square) {
         // takes a single square and returns the chess notation of it
         int file = square%board.WIDTH;
-        int rank = (square - file)/ board.HIEGHT;
+        int rank = (square - file)/ board.HEIGHT;
 
         String notation = "";
 
