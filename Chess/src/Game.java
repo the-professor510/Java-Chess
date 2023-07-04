@@ -23,7 +23,7 @@ public class Game {
         Scanner reader = new Scanner(System.in);
         String s1 = null;
 
-        while (moves.length > 0) {
+        while (moves.length > 0 && board.halfMove <50) {
             board.printBoard();
             System.out.println(listMoves(moves));
 
@@ -225,11 +225,12 @@ public class Game {
         Move[] move = board.generateMoves(colour);
         //System.out.println(move.length);
         for (Move moves : move) {
-            board.makeMove(moves);
-            System.out.println(convertToNotation(moves) + ": " + perft(depth-1, board, -colour, 0));
-            //board.printBoard();
-            //System.out.println(board.getFEN());
-            board.unMakeMove(moves);
+            if(board.makeMove(moves)) {
+                System.out.println(convertToNotation(moves) + ": " + perft(depth - 1, board, -colour, 0));
+                //board.printBoard();
+                //System.out.println(board.getFEN());
+                board.unMakeMove(moves);
+            }
             //System.out.println(moves.getStartSquare());
             //System.out.println(moves.getDestinationPiece());
             //board.printBoard();
@@ -250,14 +251,15 @@ public class Game {
             //gen moves, play them and then call this method with plus 1 to depth and invert the turn
             Move[] move = board.generateMoves(turn);
             for(Move singelMove: move){
-                board.makeMove(singelMove);
-                //numberOfMoves +=1;
-                //board.printBoard();
-                counter = perft(depth-1, board, -turn, counter);
-                //board.printBoard();
+                if(board.makeMove(singelMove)) {
+                    //numberOfMoves +=1;
+                    //board.printBoard();
+                    counter = perft(depth - 1, board, -turn, counter);
+                    //board.printBoard();
 
-                //System.out.println(counter);
-                board.unMakeMove(singelMove);
+                    //System.out.println(counter);
+                    board.unMakeMove(singelMove);
+                }
             }
         }
         return counter;
