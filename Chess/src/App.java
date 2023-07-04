@@ -1,16 +1,22 @@
 //import java.util.Arrays;
+//import java.time;
 
 public class App {
     public static void main(String[] args) throws Exception {
         Game game = new Game();
-        game.PlayGame();
+        //game.PlayGame();
 
         //game.testMoveGen();
         //game.resetBoard();
         //game.playAgainstRandMoveOpponent(-1);
+        long epoch = System.currentTimeMillis();
 
-        //game.listPerft("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10", 5, 1);
-        //game.board.printBoard();
-        //System.out.println(game.board.getFEN());
+        game.listPerft("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 5, 1);
+        game.board.printBoard();
+        System.out.println(game.board.getFEN());
+
+        long epoch2 = System.currentTimeMillis();
+
+        System.out.println("It took " + (((epoch2-epoch)/1000)) + "s");
     }
 }
