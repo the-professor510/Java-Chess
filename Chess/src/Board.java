@@ -1245,30 +1245,14 @@ public class Board {
             if (enPassant%WIDTH != WIDTH-1) {
                 sSquare = enPassant + input * WIDTH +1;
                 if (board[sSquare] == input * PAWN) {
-                    updateSquare(sSquare, EMPTY);
-                    updateSquare(enPassant, input * PAWN);
-                    updateSquare(enPassant + input * WIDTH, EMPTY);
-                    if (!(isInCheck(input))) {
-                        moves.add(new Move(sSquare, enPassant, -input * PAWN, enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                    }
-                    updateSquare(sSquare, input * PAWN);
-                    updateSquare(enPassant, EMPTY);
-                    updateSquare(enPassant + input * WIDTH, -input * PAWN);
+                    moves.add(new Move(sSquare, enPassant, -input * PAWN, enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                 }
             }
 
             if (enPassant%WIDTH != 0) {
                 sSquare = enPassant + input * WIDTH - 1;
                 if (board[sSquare] == input * PAWN) {
-                    updateSquare(sSquare, EMPTY);
-                    updateSquare(enPassant, input * PAWN);
-                    updateSquare(enPassant + input * WIDTH, EMPTY);
-                    if (!(isInCheck(input))) {
-                        moves.add(new Move(sSquare, enPassant, -input * PAWN, enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                    }
-                    updateSquare(sSquare, input * PAWN);
-                    updateSquare(enPassant, EMPTY);
-                    updateSquare(enPassant + input * WIDTH, -input * PAWN);
+                    moves.add(new Move(sSquare, enPassant, -input * PAWN, enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                 }
             }
         }
@@ -1291,10 +1275,10 @@ public class Board {
 
 
         int startSquare;
-        try{
-            startSquare = findPiece(input*KING)[0];
-        }catch(ArrayIndexOutOfBoundsException e){
-            System.out.println("King has been Taken");
+        int[] position = findPiece(input*KING);
+        if (position.length > 0){
+            startSquare = position[0];
+        } else {
             return new Move[]{};
         }
 
@@ -1307,13 +1291,7 @@ public class Board {
                 canCastle = true;
                 //System.out.println(startSquare);
                 for (int i = startSquare + 1; i<=(startSquare+2); i++) {
-                    if (isAttacked(input, i)) {
-                        canCastle = false;
-                        break;
-                    }
-                }
-                for (int i = startSquare + 1; i<=(startSquare+2); i++) {
-                    if (board[i] != EMPTY) {
+                    if (isAttacked(input, i) || board[i] != EMPTY) {
                         canCastle = false;
                         break;
                     }
@@ -1326,14 +1304,14 @@ public class Board {
             if (castling[1]) {
                 // check if between the king and queenside rook is clear
                 canCastle = true;
-                for (int i = startSquare - 1; i>=(startSquare-2); i--) {
-                    if (isAttacked(input, i)) {
-                        canCastle = false;
-                        break;
-                    }
-                }
                 for (int i = startSquare - 1; i>=(startSquare-3); i--) {
-                    if (board[i] != EMPTY) {
+                    if (isAttacked(input, i)) {
+                        if (i>=(startSquare-2)) {
+                            canCastle = false;
+                            break;
+                        }
+                    }
+                    if (board[i] != EMPTY){
                         canCastle = false;
                         break;
                     }
@@ -1352,16 +1330,12 @@ public class Board {
 
                 canCastle = true;
                 for (int i = startSquare+1; i<=(startSquare+2); i++) {
-                    if (isAttacked(input, i)) {
+                    if (isAttacked(input, i) || board[i] != EMPTY) {
                         canCastle = false;
                         break;
                     }
-                }for (int i = startSquare + 1; i<=(startSquare+2); i++) {
-                    if (board[i] != EMPTY) {
-                        canCastle = false;
-                        break;
-                    }
-                } if(canCastle) {
+                }
+                if(canCastle) {
                     moves.add(new Move(startSquare, startSquare+2, input*CASTLE, enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                 }
             }
@@ -1369,18 +1343,19 @@ public class Board {
             if (castling[3]) {
                 // check if between the king and queenside rook is clear
                 canCastle = true;
-                for (int i = startSquare-1; i>=(startSquare-2); i--){
+                for (int i = startSquare-1; i>=(startSquare-3); i--){
                     if(isAttacked(input,i)){
-                        canCastle = false;
-                        break;
+                        if (i>=(startSquare-2)) {
+                            canCastle = false;
+                            break;
+                        }
                     }
-                }
-                for (int i = startSquare - 1; i>=(startSquare-3); i--) {
                     if (board[i] != EMPTY) {
                         canCastle = false;
                         break;
                     }
-                }if(canCastle) {
+                }
+                if(canCastle) {
                     moves.add(new Move(startSquare, startSquare-2, input*CASTLE, enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                 }
             }
