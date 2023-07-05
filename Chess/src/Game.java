@@ -219,7 +219,14 @@ public class Game {
         //board.printBoard();
 
         board.printBoard();
-        System.out.println("Total: " + perft(depth, board, colour, 0));
+
+        long epoch = System.currentTimeMillis();
+        long numMoves = perft(depth, board, colour, 0);
+        long epoch2 = System.currentTimeMillis();
+
+
+        System.out.println("Total time: " + (epoch2-epoch) + "ms");
+        System.out.println("Total: " + numMoves);
         //board.printBoard();
 
         Move[] move = board.generateMoves(colour);
