@@ -594,125 +594,36 @@ public class Board {
 
         for(int i: positions) {
             //check all 8 squares around the king
+            for (int x = -1; x <= 1; x += 1) {
+                for (int y = -1; y <= 1; y += 1) {
+                    dSquare = i + WIDTH * y + x;
+                    //need to limit so that I only find if the dSquare is free when we haven't crossed over the board
 
-            if(i%WIDTH == 0) {
-                //on the left
-                if( i == 0 ){
-                    //top left
-                    for (int x=0; x<=1;x++) {
-                        for (int y = 0; y<=1; y++) {
-
-                            dSquare = i + WIDTH*y + x;
-
-                            if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                    if (dSquare >= 0 && dSquare < 64) {
+                        // the destination square is inside the board
+                        // and means we don't have to check if the square is at the top or bottom
+                        if (i % WIDTH == 0) {
+                            // we are on the left edge
+                            if (x < 0) {
+                                continue;
+                            } else {
+                                if(input*board[dSquare] <= EMPTY) {
+                                    // we can take in this direction
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
                             }
-                        }
-                    }
-                } else if (i == (WIDTH*(WIDTH-1))) {
-                    //bottom left
-                    for (int x=0; x<=1;x++) {
-                        for (int y = -1; y<=0; y++) {
-
-                            dSquare = i + WIDTH*y + x;
-
-                            if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                        } else if (i % WIDTH == WIDTH - 1) {
+                            //we are on the right edge
+                            if (x > 0) {
+                                continue;
+                            } else {
+                                if(input*board[dSquare] <= EMPTY) {
+                                    // we can take in this direction
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
                             }
-                        }
-                    }
-                } else {
-                    //left but check all other than those to the left
-                    for (int x=0; x<=1;x++) {
-                        for (int y = -1; y<=1; y++) {
-
-                            dSquare = i + WIDTH*y + x;
-
-                            if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            }
-                        }
-                    }
-                }
-            } else if (i%WIDTH == (WIDTH-1)) {
-                //on the right
-                if(i ==(WIDTH-1)) {
-                    //top right
-                    for (int x=-1; x<=0;x++) {
-                        for (int y = 0; y<=1; y++) {
-
-                            dSquare = i + WIDTH*y + x;
-
-                            if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            }
-                        }
-                    }
-                } else if(i==63) {
-                    //bottom right
-                    for (int x=-1; x<=0;x++) {
-                        for (int y = -1; y<=0; y++) {
-
-                            dSquare = i + WIDTH*y + x;
-
-                            if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            }
-                        }
-                    }
-                } else {
-                    //right but check all other than those to the left
-                    for (int x=-1; x<=0;x++) {
-                        for (int y = -1; y<=1; y++) {
-
-                            dSquare = i + WIDTH*y + x;
-
-                            if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            }
-                        }
-                    }
-                }
-            } else {
-                if(i<WIDTH) {
-                    //bottom but not on left or right
-                    for (int x=-1; x<=1;x++) {
-                        for (int y = 0; y<=1; y++) {
-
-                            dSquare = i + WIDTH*y + x;
-
-                            if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            }
-                        }
-                    }
-                } else if (i>55) {
-                    //top but not on left or right
-                    for (int x=-1; x<=1;x++) {
-                        for (int y = -1; y<=0; y++) {
-
-                            dSquare = i + WIDTH*y + x;
-
-                            if(input*board[dSquare] <= EMPTY) {
-                                // we can take in this direction
-                                moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                            }
-                        }
-                    }
-                } else {
-                    //not on any edge
-                    for (int x=-1; x<=1;x++) {
-                        for (int y = -1; y<=1; y++) {
-
-                            dSquare = i + WIDTH*y + x;
-
+                        } else {
+                            //we are in the centre of the board
                             if(input*board[dSquare] <= EMPTY) {
                                 // we can take in this direction
                                 moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
@@ -1051,85 +962,37 @@ public class Board {
 
 
         for(int i: positions) {
-                    
-            //need to first find where we are in relation to the edge of the board
-            if(i%WIDTH == 0) {
-                //on the left
-                if (i < 2 * WIDTH) {
-                    //top
-                    dSquare = i + 2*WIDTH + 1;
-                    if (input * board[dSquare] <= EMPTY) {
-                        // we can take in this direction
-                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                    }
+            for (int x = -1; x <= 1; x += 2) {
+                for (int y = -2; y <= 2; y += 4) {
+                    dSquare = i + WIDTH * y + x;
+                    //need to limit so that I only find if the dSquare is free when we haven't crossed over the board
 
-                } else if (i >= WIDTH * (WIDTH - 2)) {
-                    //bottom
-                    dSquare = i - 2*WIDTH + 1;
-                    if (input * board[dSquare] <= EMPTY) {
-                        // we can take in this direction
-                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                    }
-                } else {
-                    for (int y = -2; y <= 2; y += 4) {
-                        dSquare = i + WIDTH * y + 1;
-                        if (input * board[dSquare] <= EMPTY) {
-                            // we can take in this direction
-                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                        }
-                    }
-                }
-            }else if(i%WIDTH == 7) {
-                //on the right
-                if (i < 2 * WIDTH) {
-                    //top
-                    dSquare = i + 2*WIDTH - 1;
-                    if (input * board[dSquare] <= EMPTY) {
-                        // we can take in this direction
-                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                    }
-
-                } else if (i >= WIDTH * (WIDTH - 2)) {
-                    //bottom
-                    dSquare = i - 2*WIDTH - 1;
-                    if (input * board[dSquare] <= EMPTY) {
-                        // we can take in this direction
-                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                    }
-                } else {
-                    for (int y = -2; y <= 2; y += 4) {
-                        dSquare = i + WIDTH * y -1;
-                        if (input * board[dSquare] <= EMPTY) {
-                            // we can take in this direction
-                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                        }
-                    }
-                }
-            } else {
-                if (i < 2 * WIDTH) {
-                    //top
-                    for (int x = -1; x<=1; x+=2) {
-                        dSquare = i + 2*WIDTH + x;
-                        if (input * board[dSquare] <= EMPTY) {
-                            // we can take in this direction
-                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                        }
-                    }
-
-                } else if (i >= WIDTH * (WIDTH - 2)) {
-                    //bottom
-                    for (int x = -1; x<=1; x+=2) {
-                        dSquare = i - 2*WIDTH + x;
-                        if (input * board[dSquare] <= EMPTY) {
-                            // we can take in this direction
-                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                        }
-                    }
-                } else {
-                    for (int x = -1; x<=1; x+=2) {
-                        for (int y = -2; y <= 2; y += 4) {
-                            dSquare = i + WIDTH * y + x;
-                            if (input * board[dSquare] <= EMPTY) {
+                    if (dSquare >= 0 && dSquare < 64) {
+                        // the destination square is inside the board
+                        // and means we don't have to check if the square is at the top or bottom
+                        if (i % WIDTH == 0) {
+                            // we are on the left edge
+                            if (x < 0) {
+                                continue;
+                            } else {
+                                if(input*board[dSquare] <= EMPTY) {
+                                    // we can take in this direction
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
+                            }
+                        } else if (i % WIDTH == WIDTH - 1) {
+                            //we are on the right edge
+                            if (x > 0) {
+                                continue;
+                            } else {
+                                if(input*board[dSquare] <= EMPTY) {
+                                    // we can take in this direction
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
+                            }
+                        } else {
+                            //we are in the centre of the board
+                            if(input*board[dSquare] <= EMPTY) {
                                 // we can take in this direction
                                 moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                             }
@@ -1138,83 +1001,38 @@ public class Board {
                 }
             }
 
-            if(i%WIDTH <= 1) {
-                //on the left
-                if (i < WIDTH) {
-                    //top
-                    dSquare = i + WIDTH + 2;
-                    if(input*board[dSquare] <= EMPTY) {
-                        // we can take in this direction
-                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                    }
 
-                } else if (i >= WIDTH * (WIDTH - 1)) {
-                    //bottom
-                    dSquare = i - WIDTH + 2;
-                    if(input*board[dSquare] <= EMPTY) {
-                        // we can take in this direction
-                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                    }
+            for (int x = -2; x <= 2; x += 4) {
+                for (int y = -1; y <= 1; y += 2) {
 
-                } else {
-                    for (int y = -1; y <= 1; y += 2) {
-                        dSquare = i + WIDTH*y + 2;
-                        if(input*board[dSquare] <= EMPTY) {
-                            // we can take in this direction
-                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                        }
-                    }
-                }
-            }else if(i%WIDTH >= 6) {
-                //on the right
-                if (i < WIDTH) {
-                    //top
-                    dSquare = i + WIDTH - 2;
-                    if(input*board[dSquare] <= EMPTY) {
-                        // we can take in this direction
-                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                    }
+                    dSquare = i + WIDTH * y + x;
 
-                } else if (i >= WIDTH * (WIDTH - 1)) {
-                    //bottom
-                    dSquare = i - WIDTH - 2;
-                    if(input*board[dSquare] <= EMPTY) {
-                        // we can take in this direction
-                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                    }
 
-                } else {
-                    for (int y = -1; y <= 1; y += 2) {
-                        dSquare = i + WIDTH*y - 2;
-                        if(input*board[dSquare] <= EMPTY) {
-                            // we can take in this direction
-                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                        }
-                    }
-                }
-            } else {
-                if (i < WIDTH) {
-                    //top
-                    for (int x = -2; x<=2; x+=4) {
-                        dSquare = i + WIDTH + x;
-                        if(input*board[dSquare] <= EMPTY) {
-                            // we can take in this direction
-                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                        }
-                    }
-                } else if (i >= WIDTH * (WIDTH - 1)) {
-                    //bottom
-                    for (int x = -2; x<=2; x+=4) {
-                        dSquare = i - WIDTH + x;
-                        if(input*board[dSquare] <= EMPTY) {
-                            // we can take in this direction
-                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                        }
-                    }
-                } else {
-                    for (int x = -2; x<=2; x+=4) {
-                        for (int y = -1; y <= 1; y += 2) {
-                            dSquare = i + WIDTH*y + x;
+                    if (dSquare >= 0 && dSquare < 64) {
+                        // the destination square is inside the board
+                        // and means we don't have to check if the square is at the top or bottom
+                        if (i % WIDTH <= 1) {
+                            // we are on the left edge
+                            if (x < 0) {
+                                continue;
+                            } else {
+                                if(input*board[dSquare] <= EMPTY) {
+                                    // we can take in this direction
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
+                            }
+                        } else if (i % WIDTH >= WIDTH - 2) {
+                            //we are on the right edge
+                            if (x > 0) {
+                                continue;
+                            } else {
+                                if(input*board[dSquare] <= EMPTY) {
+                                    // we can take in this direction
+                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                                }
+                            }
+                        } else {
+                            //we are in the centre of the board
                             if(input*board[dSquare] <= EMPTY) {
                                 // we can take in this direction
                                 moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
@@ -1649,125 +1467,36 @@ public class Board {
         }
 
         //check to see if the king can capture
+        for (int x = -1; x <= 1; x += 1) {
+            for (int y = -1; y <= 1; y += 1) {
+                dSquare = square + WIDTH * y + x;
+                //need to limit so that I only find if the dSquare is free when we haven't crossed over the board
 
-        if(square%WIDTH == 0) {
-            //on the left
-            if( square == 0 ){
-                //top left
-                for (int x=0; x<=1;x++) {
-                    for (int y = 0; y<=1; y++) {
-
-                        dSquare = square + WIDTH*y + x;
-
-                        if(board[dSquare] == -colour *KING) {
-                            // we can take in this direction
-                            return true;
+                if (dSquare >= 0 && dSquare < 64) {
+                    // the destination square is inside the board
+                    // and means we don't have to check if the square is at the top or bottom
+                    if (square % WIDTH == 0) {
+                        // we are on the left edge
+                        if (x < 0) {
+                            continue;
+                        } else {
+                            if(board[dSquare] == -colour *KING) {
+                                // we can take in this direction
+                                return true;
+                            }
                         }
-                    }
-                }
-            } else if (square == WIDTH*(WIDTH-1)) {
-                //bottom left
-                for (int x=0; x<=1;x++) {
-                    for (int y = -1; y<=0; y++) {
-
-                        dSquare = square + WIDTH*y + x;
-
-                        if(board[dSquare] == -colour * KING) {
-                            // we can take in this direction
-                            return true;
+                    } else if (square % WIDTH == WIDTH - 1) {
+                        //we are on the right edge
+                        if (x > 0) {
+                            continue;
+                        } else {
+                            if(board[dSquare] == -colour *KING) {
+                                // we can take in this direction
+                                return true;
+                            }
                         }
-                    }
-                }
-            } else {
-                //left but check all other than those to the left
-                for (int x=0; x<=1;x++) {
-                    for (int y = -1; y<=1; y++) {
-
-                        dSquare = square + WIDTH*y + x;
-
-                        if(board[dSquare] == -colour*KING) {
-                            // we can take in this direction
-                            return true;
-                        }
-                    }
-                }
-            }
-        } else if (square%WIDTH == (WIDTH-1)) {
-            //on the right
-            if(square == (WIDTH-1)) {
-                //top right
-                for (int x=-1; x<=0;x++) {
-                    for (int y = 0; y<=1; y++) {
-
-                        dSquare = square + WIDTH*y + x;
-
-                        if(board[dSquare] == -colour*KING) {
-                            // we can take in this direction
-                            return true;
-                        }
-                    }
-                }
-            } else if(square== (WIDTH*WIDTH -1)) {
-                //bottom right
-                for (int x=-1; x<=0;x++) {
-                    for (int y = -1; y<=0; y++) {
-
-                        dSquare = square + WIDTH*y + x;
-
-                        if(board[dSquare] == -colour*KING) {
-                            // we can take in this direction
-                            return true;
-                        }
-                    }
-                }
-            } else {
-                //right but check all other than those to the left
-                for (int x=-1; x<=0;x++) {
-                    for (int y = -1; y<=1; y++) {
-
-                        dSquare = square + WIDTH*y + x;
-
-                        if(board[dSquare] == -colour*KING) {
-                            // we can take in this direction
-                            return true;
-                        }
-                    }
-                }
-            }
-        } else {
-            if(square<WIDTH) {
-                //top but not on left or right
-                for (int x=-1; x<=1;x++) {
-                    for (int y = 0; y<=1; y++) {
-
-                        dSquare = square + WIDTH*y + x;
-
-                        if(board[dSquare] == -colour*KING) {
-                            // we can take in this direction
-                            return true;
-                        }
-                    }
-                }
-            } else if (square> (WIDTH * (WIDTH-1) -1)) {
-                //bottom but not on left or right
-                for (int x=-1; x<=1;x++) {
-                    for (int y = -1; y<=0; y++) {
-
-                        dSquare = square + WIDTH*y + x;
-
-                        if(board[dSquare] == -colour* KING) {
-                            // we can take in this direction
-                            return true;
-                        }
-                    }
-                }
-            } else {
-                //not on any edge
-                for (int x=-1; x<=1;x++) {
-                    for (int y = -1; y<=1; y++) {
-
-                        dSquare = square + WIDTH*y + x;
-
+                    } else {
+                        //we are in the centre of the board
                         if(board[dSquare] == -colour *KING) {
                             // we can take in this direction
                             return true;
@@ -1776,7 +1505,6 @@ public class Board {
                 }
             }
         }
-
         return false;
     }
 
