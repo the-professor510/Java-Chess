@@ -43,6 +43,8 @@ public class Board {
 
     private final int[] board = new int[HEIGHT *WIDTH];
 
+    private int[] locations = new int[64];
+
     //private ArrayList<Move> moveList = new ArrayList<>();
 
     public Board(){
@@ -371,17 +373,17 @@ public class Board {
 
     private int[] findPiece(int piece) {
         
-        int[] location = new int[64];
+        //int[] location = new int[64];
         int counter = 0;
 
         for(int i = 0; i< HEIGHT *WIDTH; i++){
             if(board[i] == piece) {
-                location[counter] = i;
+                locations[counter] = i;
                 counter +=1;
             }
         }
 
-        return Arrays.copyOf(location,counter);
+        return Arrays.copyOf(locations,counter);
     }
 
     /*
@@ -395,9 +397,6 @@ public class Board {
         int[] positions = findPiece(input*PAWN);
         for(int i: positions){
             //check if 1 in front is possible, if this then check if two infront is possible
-
-            //check if the pawn is moved it won't be in check
-
 
             //forward moves
             dSquare = i - (input * WIDTH);
@@ -1052,35 +1051,85 @@ public class Board {
 
 
         for(int i: positions) {
-            //System.out.println(i);
+                    
+            //need to first find where we are in relation to the edge of the board
+            if(i%WIDTH == 0) {
+                //on the left
+                if (i < 2 * WIDTH) {
+                    //top
+                    dSquare = i + 2*WIDTH + 1;
+                    if (input * board[dSquare] <= EMPTY) {
+                        // we can take in this direction
+                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                    }
 
+                } else if (i >= WIDTH * (WIDTH - 2)) {
+                    //bottom
+                    dSquare = i - 2*WIDTH + 1;
+                    if (input * board[dSquare] <= EMPTY) {
+                        // we can take in this direction
+                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                    }
+                } else {
+                    for (int y = -2; y <= 2; y += 4) {
+                        dSquare = i + WIDTH * y + 1;
+                        if (input * board[dSquare] <= EMPTY) {
+                            // we can take in this direction
+                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                        }
+                    }
+                }
+            }else if(i%WIDTH == 7) {
+                //on the right
+                if (i < 2 * WIDTH) {
+                    //top
+                    dSquare = i + 2*WIDTH - 1;
+                    if (input * board[dSquare] <= EMPTY) {
+                        // we can take in this direction
+                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                    }
 
-            for (int x = -1; x<=1; x+=2){
-                for (int y = -2; y<=2; y+=4) {
-                    dSquare = i + WIDTH*y + x;
-                    //System.out.println(dSquare);
-                    //need to limit so that I only find if the dSquare is free when we haven't crossed over the board
-                    if(dSquare%WIDTH > i%WIDTH ) {
-                        if (!( i%WIDTH == 0 && dSquare%WIDTH == (WIDTH-1))) {
-                            if(dSquare>=0 && dSquare<64) {
-                                if(input*board[dSquare] <= EMPTY) {
-                                    // we can take in this direction
-                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                }
-                            }
+                } else if (i >= WIDTH * (WIDTH - 2)) {
+                    //bottom
+                    dSquare = i - 2*WIDTH - 1;
+                    if (input * board[dSquare] <= EMPTY) {
+                        // we can take in this direction
+                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                    }
+                } else {
+                    for (int y = -2; y <= 2; y += 4) {
+                        dSquare = i + WIDTH * y -1;
+                        if (input * board[dSquare] <= EMPTY) {
+                            // we can take in this direction
+                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                         }
-                    } else if (dSquare%WIDTH < i%WIDTH ) {
-                        if (!(i%WIDTH == (WIDTH-1) && dSquare%WIDTH == 0)) {
-                            if(dSquare>=0 && dSquare<64) {
-                                if(input*board[dSquare] <= EMPTY) {
-                                    // we can take in this direction
-                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                }
-                            }
+                    }
+                }
+            } else {
+                if (i < 2 * WIDTH) {
+                    //top
+                    for (int x = -1; x<=1; x+=2) {
+                        dSquare = i + 2*WIDTH + x;
+                        if (input * board[dSquare] <= EMPTY) {
+                            // we can take in this direction
+                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                         }
-                    } else {
-                        if(dSquare>=0 && dSquare<64) {
-                            if(input*board[dSquare] <= EMPTY) {
+                    }
+
+                } else if (i >= WIDTH * (WIDTH - 2)) {
+                    //bottom
+                    for (int x = -1; x<=1; x+=2) {
+                        dSquare = i - 2*WIDTH + x;
+                        if (input * board[dSquare] <= EMPTY) {
+                            // we can take in this direction
+                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                        }
+                    }
+                } else {
+                    for (int x = -1; x<=1; x+=2) {
+                        for (int y = -2; y <= 2; y += 4) {
+                            dSquare = i + WIDTH * y + x;
+                            if (input * board[dSquare] <= EMPTY) {
                                 // we can take in this direction
                                 moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                             }
@@ -1089,38 +1138,83 @@ public class Board {
                 }
             }
 
-            for (int x = -2; x<=2; x+=4){
-                for (int y = -1; y<=1; y+=2) {
-                    dSquare = i + WIDTH*y + x;
+            if(i%WIDTH <= 1) {
+                //on the left
+                if (i < WIDTH) {
+                    //top
+                    dSquare = i + WIDTH + 2;
+                    if(input*board[dSquare] <= EMPTY) {
+                        // we can take in this direction
+                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                    }
 
-                    if(dSquare%WIDTH > i%WIDTH ) {
-                        if ( i%WIDTH == 0 && dSquare%WIDTH == (WIDTH-2)) {
-                            continue;
-                        } else if ( i%WIDTH == 1 && dSquare%WIDTH == (WIDTH-1)) {
-                            continue;
-                        } else {
-                            if(dSquare>=0 && dSquare<64) {
-                                if(input*board[dSquare] <= EMPTY) {
-                                    // we can take in this direction
-                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                }
-                            }
+                } else if (i >= WIDTH * (WIDTH - 1)) {
+                    //bottom
+                    dSquare = i - WIDTH + 2;
+                    if(input*board[dSquare] <= EMPTY) {
+                        // we can take in this direction
+                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                    }
+
+                } else {
+                    for (int y = -1; y <= 1; y += 2) {
+                        dSquare = i + WIDTH*y + 2;
+                        if(input*board[dSquare] <= EMPTY) {
+                            // we can take in this direction
+                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                         }
-                    } else if (dSquare%WIDTH < i%WIDTH ) {
-                        if ( i%WIDTH == (WIDTH-2) && dSquare%WIDTH == 0) {
-                            continue;
-                        } else if ( i%WIDTH == (WIDTH -1) && dSquare%WIDTH == 1) {
-                            continue;
-                        } else {
-                            if(dSquare>=0 && dSquare<64) {
-                                if(input*board[dSquare] <= EMPTY) {
-                                    // we can take in this direction
-                                    moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
-                                }
-                            }
+                    }
+                }
+            }else if(i%WIDTH >= 6) {
+                //on the right
+                if (i < WIDTH) {
+                    //top
+                    dSquare = i + WIDTH - 2;
+                    if(input*board[dSquare] <= EMPTY) {
+                        // we can take in this direction
+                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                    }
+
+                } else if (i >= WIDTH * (WIDTH - 1)) {
+                    //bottom
+                    dSquare = i - WIDTH - 2;
+                    if(input*board[dSquare] <= EMPTY) {
+                        // we can take in this direction
+                        moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                    }
+
+                } else {
+                    for (int y = -1; y <= 1; y += 2) {
+                        dSquare = i + WIDTH*y - 2;
+                        if(input*board[dSquare] <= EMPTY) {
+                            // we can take in this direction
+                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
                         }
-                    } else {
-                        if(dSquare>=0 && dSquare<64) {
+                    }
+                }
+            } else {
+                if (i < WIDTH) {
+                    //top
+                    for (int x = -2; x<=2; x+=4) {
+                        dSquare = i + WIDTH + x;
+                        if(input*board[dSquare] <= EMPTY) {
+                            // we can take in this direction
+                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                        }
+                    }
+                } else if (i >= WIDTH * (WIDTH - 1)) {
+                    //bottom
+                    for (int x = -2; x<=2; x+=4) {
+                        dSquare = i - WIDTH + x;
+                        if(input*board[dSquare] <= EMPTY) {
+                            // we can take in this direction
+                            moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));
+                        }
+                    }
+                } else {
+                    for (int x = -2; x<=2; x+=4) {
+                        for (int y = -1; y <= 1; y += 2) {
+                            dSquare = i + WIDTH*y + x;
                             if(input*board[dSquare] <= EMPTY) {
                                 // we can take in this direction
                                 moves.add(new Move(i, dSquare, board[dSquare], enPassant, EMPTY, 0, 0, castling[0], castling[1], castling[2], castling[3], input));

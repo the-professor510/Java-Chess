@@ -247,7 +247,7 @@ public class Game {
 
     }
 
-    public int perft(int depth, Board board, int turn, int counter){
+    public long perft(int depth, Board board, int turn, long counter){
         if (depth == 0) {
             return (counter+1);
         }

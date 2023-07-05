@@ -13,7 +13,19 @@ public class App {
         System.out.println(game.board.getFEN());
 
         long epoch2 = System.currentTimeMillis();
+        System.out.println("It took " + (epoch2-epoch) + "ms");
 
-        System.out.println("It took " + (((epoch2-epoch)/1000)) + "s");
+        int total = 0;
+        int numAverges =10;
+        for (int i =0; i<10; i++) {
+            epoch = System.currentTimeMillis();
+            game.listPerft("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 5, 1);
+            epoch2 = System.currentTimeMillis();
+
+            total += (epoch2-epoch);
+        }
+
+        System.out.println("Average run took " + (total/numAverges) + "ms");
+
     }
 }
